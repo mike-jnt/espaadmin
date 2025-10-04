@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Reservas y Servicios</title>
+    <style>
+        /* Reset global */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* Barra lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #2F4F4F;
+            padding: 30px 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+            border-top-right-radius: 12px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 50px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease-in-out;
+            text-align: center;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #4CAF50;
+        }
+
+        /* Contenedor principal */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            background-color: #fff;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 250px);
+            height: 100vh;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Cabecera */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #2F4F4F;
+        }
+
+        /* Filtros */
+        .filter-buttons {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px; /* Espaciado entre botones */
+        }
+
+        .filter-buttons button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: 1px solid #4CAF50;
+            background-color: #fff;
+            color: #4CAF50;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .filter-buttons button:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Estilos de la sección de reservas */
+        .reservations-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+            padding-bottom: 50px;
+        }
+
+        /* Tarjetas de reserva */
+        .reservation-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            width: 280px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+            flex-direction: column;
+        }
+
+        .reservation-card:hover {
+            transform: scale(1.02);
+        }
+
+        .reservation-info {
+            flex: 1;
+            padding-right: 30px;
+            text-align: left;
+        }
+
+        .reservation-info p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .reservation-info .name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2F4F4F;
+        }
+
+        .status-button, .postpone-button, .save-client-button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            margin-left: 10px;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .status-button:hover, .postpone-button:hover, .save-client-button:hover {
+            background-color: #45a049;
+        }
+
+        .status-button.attended {
+            background-color: #28a745;
+        }
+
+        .status-button.delayed {
+            background-color: #f0ad4e;
+        }
+
+        /* Sección de Clientes */
+        .clients-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .clients-list li {
+            padding: 15px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Estilos de la sección de servicios */
+        .service-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-form input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+
+        .service-form input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .service-form button {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            width: 100%;
+        }
+
+        .service-form button:hover {
+            background-color: #45a049;
+        }
+
+        /* Lista de servicios */
+        .services-list {
+            margin-top: 30px;
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .services-list li {
+            padding: 15px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .services-list li:hover {
+            background-color: #e0e0e0;
+            transition: background-color 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>SPA</h2>
+        <ul>
+            <li onclick="showReservations()">Reservas</li>
+            <li onclick="showServices()">Servicios</li>
+            <li onclick="showClients()">Clientes</li>
+            <li onclick="showSettings()">Ajustes</li>
+        </ul>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <!-- Sección de Reservas (por defecto) -->
+        <div id="reservas-section">
+            <div class="header">
+                <h1>Reservas de hoy</h1>
+            </div>
+
+            <div class="filter-buttons">
+                <button onclick="filterReservations('all')">Todo</button>
+                <button onclick="filterReservations('pending')">Pendiente</button>
+                <button onclick="filterReservations('attended')">Atendido</button>
+                <button onclick="filterReservations('delayed')">Aplazado</button>
+            </div>
+
+            <div id="reservations-pending" class="reservations-container">
+                <h3>Pendientes</h3>
+                <!-- Las reservas pendientes se mostrarán aquí -->
+            </div>
+
+            <div id="reservations-attended" class="reservations-container" style="display: none;">
+                <h3>Atendidas</h3>
+                <!-- Las reservas atendidas se mostrarán aquí -->
+            </div>
+
+            <div id="reservations-delayed" class="reservations-container" style="display: none;">
+                <h3>Aplazadas</h3>
+                <!-- Las reservas aplazadas se mostrarán aquí -->
+            </div>
+        </div>
+
+        <!-- Sección de Servicios -->
+        <div id="services-section" style="display:none;">
+            <div class="header">
+                <h1>Gestión de Servicios</h1>
+            </div>
+
+            <!-- Formulario para agregar un servicio -->
+            <div class="service-form">
+                <input type="text" id="service-name" placeholder="Nombre del servicio" required>
+                <input type="number" id="service-price" placeholder="Precio del servicio" required>
+                <button onclick="addService()">Agregar Servicio</button>
+            </div>
+
+            <!-- Lista de servicios -->
+            <ul class="services-list" id="services-list">
+                <!-- Los servicios se mostrarán aquí -->
+            </ul>
+        </div>
+
+        <!-- Sección de Clientes -->
+        <div id="clients-section" style="display:none;">
+            <div class="header">
+                <h1>Clientes Guardados</h1>
+            </div>
+
+            <ul class="clients-list" id="clients-list">
+                <!-- Los clientes guardados se mostrarán aquí -->
+            </ul>
+        </div>
+
+        <!-- Sección de Ajustes -->
+        <div id="settings-section" style="display:none;">
+            <div class="header">
+                <h1>Ajustes del Panel</h1>
+            </div>
+
+            <!-- Información del SPA -->
+            <div class="service-form">
+                <h3>Información del SPA</h3>
+                <input type="text" id="spa-name" placeholder="Nombre del SPA">
+                <input type="text" id="spa-address" placeholder="Dirección">
+                <input type="text" id="spa-phone" placeholder="Teléfono">
+                <input type="email" id="spa-email" placeholder="Correo electrónico">
+                <button onclick="saveBusinessInfo()">Guardar Información</button>
+            </div>
+
+            <!-- Horarios de atención -->
+            <div class="service-form">
+                <h3>Horarios de Atención</h3>
+                <label>Apertura:</label>
+                <input type="time" id="open-time">
+                <label>Cierre:</label>
+                <input type="time" id="close-time">
+                <label>Días de Atención:</label>
+                <input type="text" id="working-days" placeholder="Ej: Lunes-Viernes">
+                <button onclick="saveWorkingHours()">Guardar Horarios</button>
+            </div>
+
+            <!-- Notificaciones -->
+            <div class="service-form">
+                <h3>Notificaciones</h3>
+                <label>
+                    <input type="checkbox" id="notify-reservations"> Activar notificaciones de reservas
+                </label>
+                <label>
+                    <input type="checkbox" id="notify-reminders"> Activar recordatorios por correo
+                </label>
+                <button onclick="saveNotifications()">Guardar Notificaciones</button>
+            </div>
+
+            <!-- Gestión de datos -->
+            <div class="service-form">
+                <h3>Gestión de Datos</h3>
+                <button onclick="clearReservations()" style="background-color:#e74c3c;">Limpiar Reservas</button>
+                <button onclick="clearServices()" style="background-color:#e67e22;">Limpiar Servicios</button>
+                <button onclick="clearClients()" style="background-color:#3498db;">Limpiar Clientes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos simulados de reservas
+        let reservations = [
+            { name: "Ana López", phone: "311 555 7823", service: "Masaje relajante", date: "15/09/2025", time: "10:00", status: "Pendiente" },
+            { name: "Carlos Méndez", phone: "321 555 9047", service: "Masaje relajante", date: "15/09/2025", time: "11:00", status: "Pendiente" },
+            { name: "Laura García", phone: "315 555 6861", service: "Tratamiento facial", date: "15/09/2025", time: "11:30", status: "Atendido" },
+            { name: "Javier Torres", phone: "314 555 3278", service: "Masaje de tejido profundo", date: "15/09/2025", time: "13:00", status: "Aplazado" }
+        ];
+
+        let services = [];
+        let clients = [];
+
+        // Función para mostrar reservas
+        function showReservations() {
+            document.getElementById('services-section').style.display = 'none';
+            document.getElementById('clients-section').style.display = 'none';
+            document.getElementById('settings-section').style.display = 'none';
+            document.getElementById('reservas-section').style.display = 'block';
+            displayReservations();
+        }
+
+        // Función para mostrar servicios
+        function showServices() {
+            document.getElementById('reservas-section').style.display = 'none';
+            document.getElementById('clients-section').style.display = 'none';
+            document.getElementById('settings-section').style.display = 'none';
+            document.getElementById('services-section').style.display = 'block';
+        }
+
+        // Función para mostrar clientes
+        function showClients() {
+            document.getElementById('services-section').style.display = 'none';
+            document.getElementById('reservas-section').style.display = 'none';
+            document.getElementById('settings-section').style.display = 'none';
+            document.getElementById('clients-section').style.display = 'block';
+            displayClients();
+        }
+
+        // Función para mostrar ajustes
+        function showSettings() {
+            document.getElementById('services-section').style.display = 'none';
+            document.getElementById('reservas-section').style.display = 'none';
+            document.getElementById('clients-section').style.display = 'none';
+            document.getElementById('settings-section').style.display = 'block';
+        }
+
+        // Función para mostrar todas las reservas
+        function displayReservations() {
+            const pendingContainer = document.getElementById('reservations-pending');
+            const attendedContainer = document.getElementById('reservations-attended');
+            const delayedContainer = document.getElementById('reservations-delayed');
+
+            pendingContainer.innerHTML = "<h3>Pendientes</h3>";
+            attendedContainer.innerHTML = "<h3>Atendidas</h3>";
+            delayedContainer.innerHTML = "<h3>Aplazadas</h3>";
+
+            reservations.forEach(reservation => {
+                const reservationElement = document.createElement('div');
+                reservationElement.classList.add('reservation-card');
+                reservationElement.innerHTML = `
+                    <div class="reservation-info">
+                        <p class="name">${reservation.name}</p>
+                        <p>Tel: ${reservation.phone}</p>
+                        <p>Servicio: ${reservation.service}</p>
+                        <p>Fecha: ${reservation.date}</p>
+                        <p>Hora: ${reservation.time}</p>
+                    </div>
+                    <div>
+                        <button class="status-button ${reservation.status.toLowerCase()}" onclick="updateStatus('${reservation.name}')">
+                            ${reservation.status}
+                        </button>
+                        <button class="postpone-button" onclick="postponeReservation('${reservation.name}')">
+                            Aplazar
+                        </button>
+                        <button class="save-client-button" onclick="saveClient('${reservation.name}')">
+                            Guardar Cliente
+                        </button>
+                    </div>
+                `;
+
+                if (reservation.status === "Pendiente") {
+                    pendingContainer.appendChild(reservationElement);
+                } else if (reservation.status === "Atendido") {
+                    attendedContainer.appendChild(reservationElement);
+                } else if (reservation.status === "Aplazado") {
+                    delayedContainer.appendChild(reservationElement);
+                }
+            });
+        }
+
+        // Función para filtrar reservas
+        function filterReservations(status) {
+            document.getElementById('reservations-pending').style.display = 'none';
+            document.getElementById('reservations-attended').style.display = 'none';
+            document.getElementById('reservations-delayed').style.display = 'none';
+
+            if (status === 'all') {
+                document.getElementById('reservations-pending').style.display = 'block';
+                document.getElementById('reservations-attended').style.display = 'block';
+                document.getElementById('reservations-delayed').style.display = 'block';
+            } else {
+                document.getElementById(`reservations-${status}`).style.display = 'block';
+            }
+        }
+
+        // Función para cambiar el estado de la reserva
+        function updateStatus(name) {
+            const reservation = reservations.find(r => r.name === name);
+            if (reservation) {
+                reservation.status = reservation.status === "Pendiente" ? "Atendido" : "Pendiente";
+                displayReservations(); // Actualizar la lista de reservas
+            }
+        }
+
+        // Función para aplazar la reserva
+        function postponeReservation(name) {
+            const reservation = reservations.find(r => r.name === name);
+            if (reservation) {
+                reservation.status = "Aplazado";
+                displayReservations(); // Actualizar la lista de reservas
+            }
+        }
+
+        // Función para guardar cliente
+        function saveClient(name) {
+            const reservation = reservations.find(r => r.name === name);
+            if (reservation && !clients.includes(reservation.name)) {
+                clients.push(reservation.name);
+                displayClients();
+                alert(`${reservation.name} ha sido guardado como cliente.`);
+            } else {
+                alert('Este cliente ya está guardado.');
+            }
+        }
+
+        // Función para mostrar clientes guardados
+        function displayClients() {
+            const clientsList = document.getElementById('clients-list');
+            clientsList.innerHTML = ''; // Limpiar la lista de clientes
+
+            clients.forEach(client => {
+                const clientElement = document.createElement('li');
+                clientElement.textContent = client;
+                clientsList.appendChild(clientElement);
+            });
+        }
+        
+        // Función para guardar información del SPA
+        function saveBusinessInfo() {
+            const spaName = document.getElementById('spa-name').value;
+            const spaAddress = document.getElementById('spa-address').value;
+            const spaPhone = document.getElementById('spa-phone').value;
+            const spaEmail = document.getElementById('spa-email').value;
+
+            // Guardar en localStorage
+            localStorage.setItem('spaName', spaName);
+            localStorage.setItem('spaAddress', spaAddress);
+            localStorage.setItem('spaPhone', spaPhone);
+            localStorage.setItem('spaEmail', spaEmail);
+
+            alert('Información del SPA guardada.');
+        }
+
+        // Función para guardar horarios de atención
+        function saveWorkingHours() {
+            const openTime = document.getElementById('open-time').value;
+            const closeTime = document.getElementById('close-time').value;
+            const workingDays = document.getElementById('working-days').value;
+
+            // Guardar en localStorage
+            localStorage.setItem('openTime', openTime);
+            localStorage.setItem('closeTime', closeTime);
+            localStorage.setItem('workingDays', workingDays);
+
+            alert('Horarios de atención guardados.');
+        }
+
+        // Función para guardar notificaciones
+        function saveNotifications() {
+            const notifyReservations = document.getElementById('notify-reservations').checked;
+            const notifyReminders = document.getElementById('notify-reminders').checked;
+
+            // Guardar en localStorage
+            localStorage.setItem('notifyReservations', notifyReservations);
+            localStorage.setItem('notifyReminders', notifyReminders);
+
+            alert('Notificaciones guardadas.');
+        }
+
+        // Limpiar datos de reservas
+        function clearReservations() {
+            localStorage.removeItem('reservations');
+            alert('Reservas eliminadas.');
+            location.reload();
+        }
+
+        // Limpiar datos de servicios
+        function clearServices() {
+            localStorage.removeItem('services');
+            alert('Servicios eliminados.');
+            location.reload();
+        }
+
+        // Limpiar datos de clientes
+        function clearClients() {
+            localStorage.removeItem('clients');
+            alert('Clientes eliminados.');
+            location.reload();
+        }
+        
+        // Inicializar mostrando las reservas
+        showReservations();
+    </script>
+</body>
+</html>
