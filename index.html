@@ -6,37 +6,45 @@
   <title>Panel de Administración - SPA Puerto Rico Mogán</title>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f6f9;
-      color: #333;
-      display: flex;
-      min-height: 100vh;
-      overflow: hidden;
+    :root {
+      --color-primary: #4CAF50;
+      --color-secondary: #2F4F4F;
+      --color-bg: #f4f6f9;
+      --color-card: #ffffff;
+      --color-text: #333;
     }
 
-    /* Sidebar */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== SIDEBAR ===== */
     .sidebar {
       width: 250px;
-      background-color: #2F4F4F;
-      padding: 30px 20px;
+      background-color: var(--color-secondary);
       color: white;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       height: 100vh;
-      border-top-right-radius: 12px;
       position: fixed;
       top: 0;
       left: 0;
+      transition: transform 0.3s ease;
+      z-index: 100;
     }
 
     .sidebar h2 {
-      font-size: 26px;
-      color: #fff;
-      margin-bottom: 50px;
       text-align: center;
+      font-size: 22px;
+      margin: 20px 0;
     }
 
     .sidebar ul {
@@ -45,112 +53,138 @@
     }
 
     .sidebar ul li {
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 18px;
+      padding: 15px;
       text-align: center;
+      cursor: pointer;
       transition: background-color 0.3s;
+      border-radius: 6px;
+      margin: 5px 10px;
     }
 
-    .sidebar ul li.active,
-    .sidebar ul li:hover {
-      background-color: #4CAF50;
+    .sidebar ul li:hover,
+    .sidebar ul li.active {
+      background-color: var(--color-primary);
     }
 
-    /* Main Content */
+    /* ===== MAIN CONTENT ===== */
     .main-content {
       margin-left: 250px;
-      padding: 30px;
-      background-color: #fff;
-      border-top-left-radius: 12px;
-      border-bottom-left-radius: 12px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-      width: calc(100% - 250px);
-      height: 100vh;
+      flex: 1;
+      background-color: var(--color-card);
+      border-radius: 10px 0 0 10px;
+      padding: 20px;
       overflow-y: auto;
+      height: 100vh;
       transition: all 0.3s ease;
     }
 
-    h1 { margin-bottom: 20px; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
+    h1 {
+      font-size: 24px;
+      color: var(--color-secondary);
+    }
+
+    /* ===== FILTER BUTTONS ===== */
     .filters {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 25px;
     }
 
     .filter-btn {
-      padding: 10px 18px;
+      flex: 1 1 100px;
+      padding: 10px;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
       color: white;
-      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
       transition: all 0.3s;
     }
 
     .filter-btn:hover { transform: scale(1.05); }
     .all { background-color: #555; }
     .pending { background-color: #f0ad4e; }
-    .attended { background-color: #4CAF50; }
+    .attended { background-color: var(--color-primary); }
     .postponed { background-color: #5bc0de; }
     .filter-btn.active { outline: 3px solid #222; }
 
-    /* Reservations grid */
+    /* ===== RESERVATIONS GRID ===== */
     .reservations-container {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
-      justify-content: flex-start;
     }
 
     .reservation-card {
-      background-color: #fff;
-      width: 280px;
-      padding: 20px;
+      background-color: var(--color-card);
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       transition: transform 0.2s;
     }
 
     .reservation-card:hover { transform: scale(1.02); }
+
+    .reservation-info p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-secondary);
+    }
+
     .status-button, .postpone-button {
       padding: 10px;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
       color: white;
-      font-size: 14px;
-      width: 100%;
+      cursor: pointer;
       margin-top: 8px;
+      font-size: 14px;
     }
 
-    .status-button { background-color: #4CAF50; }
+    .status-button { background-color: var(--color-primary); }
     .postpone-button { background-color: #f0ad4e; }
 
-    /* Other sections */
-    .hidden { display: none; }
+    /* ===== FORMS & INPUTS ===== */
     .input-field {
       width: 100%;
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
+      font-size: 15px;
     }
 
-    button.add-btn {
-      background-color: #4CAF50;
+    .add-btn {
+      background-color: var(--color-primary);
       border: none;
       color: white;
       padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
+      font-weight: 500;
       transition: 0.3s;
     }
 
-    button.add-btn:hover { background-color: #45a049; }
+    .add-btn:hover { background-color: #3f9244; }
 
     ul.item-list {
       list-style: none;
@@ -159,16 +193,46 @@
     }
 
     ul.item-list li {
-      background: #f1f1f1;
+      background: #f8f8f8;
       padding: 10px;
       border-radius: 8px;
       margin-bottom: 5px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+    }
+
+    /* ===== MOBILE RESPONSIVENESS ===== */
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-250px);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        padding-top: 70px;
+      }
+      .toggle-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 16px;
+        cursor: pointer;
+        z-index: 110;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="sidebar">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
     <h2>SPA Admin</h2>
     <ul>
       <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
@@ -178,11 +242,16 @@
     </ul>
   </div>
 
+  <!-- Toggle for mobile -->
+  <button class="toggle-btn" onclick="toggleMenu()">☰</button>
+
+  <!-- Main content -->
   <div class="main-content">
-    <!-- RESERVAS -->
+    <!-- SECCIÓN: RESERVAS -->
     <section id="reservas">
-      <h1>Reservas registradas</h1>
-      <p style="font-size:14px; color:#666;">(Actualización en tiempo real ⚡)</p>
+      <div class="header">
+        <h1>Reservas en tiempo real ⚡</h1>
+      </div>
 
       <div class="filters">
         <button class="filter-btn all active" onclick="setFilter('all', this)">Todas</button>
@@ -196,7 +265,7 @@
       </div>
     </section>
 
-    <!-- SERVICIOS -->
+    <!-- SECCIÓN: SERVICIOS -->
     <section id="servicios" class="hidden">
       <h1>Gestión de Servicios</h1>
       <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
@@ -205,13 +274,13 @@
       <ul id="service-list" class="item-list"></ul>
     </section>
 
-    <!-- CLIENTES -->
+    <!-- SECCIÓN: CLIENTES -->
     <section id="clientes" class="hidden">
       <h1>Clientes registrados</h1>
       <ul id="clients-list" class="item-list"></ul>
     </section>
 
-    <!-- AJUSTES -->
+    <!-- SECCIÓN: AJUSTES -->
     <section id="ajustes" class="hidden">
       <h1>Configuración del Negocio</h1>
       <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
@@ -250,18 +319,19 @@
     let allReservations = [];
     let currentFilter = "all";
 
-    // ========== NAVEGACIÓN ENTRE SECCIONES ==========
+    // === MENU Y SECCIONES ===
+    window.toggleMenu = () => {
+      document.getElementById("sidebar").classList.toggle("open");
+    };
+
     window.showSection = (id) => {
       document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
       document.getElementById("menu-" + id).classList.add("active");
-
-      if (id === "servicios") loadServices();
-      if (id === "clientes") loadClients();
     };
 
-    // ========== RESERVAS EN TIEMPO REAL ==========
+    // === RESERVAS EN TIEMPO REAL ===
     function listenReservations() {
       const q = collection(db, "reservations");
       onSnapshot(q, (snapshot) => {
@@ -272,24 +342,23 @@
 
     function renderReservations() {
       const container = document.getElementById("reservations-container");
-      let filtered = currentFilter === "all"
+      container.innerHTML = "";
+      const filtered = currentFilter === "all"
         ? allReservations
         : allReservations.filter(r => r.status === currentFilter);
-      container.innerHTML = "";
 
       if (filtered.length === 0) {
         container.innerHTML = "<p>No hay reservas para mostrar.</p>";
         return;
       }
 
-      filtered.forEach((data) => {
+      filtered.forEach(data => {
         const card = document.createElement("div");
         card.classList.add("reservation-card");
         card.innerHTML = `
           <div class="reservation-info">
             <p class="name">${data.full_name}</p>
             <p><strong>Teléfono:</strong> ${data.phone}</p>
-            <p><strong>Correo:</strong> ${data.email}</p>
             <p><strong>Servicio:</strong> ${data.massage_type}</p>
             <p><strong>Fecha:</strong> ${data.date}</p>
             <p><strong>Hora:</strong> ${data.time}</p>
@@ -318,12 +387,12 @@
       await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
     };
 
-    // ========== SERVICIOS ==========
+    // === SERVICIOS ===
     async function loadServices() {
       const list = document.getElementById("service-list");
       list.innerHTML = "";
       const snapshot = await getDocs(collection(db, "services"));
-      snapshot.forEach((docSnap) => {
+      snapshot.forEach(docSnap => {
         const data = docSnap.data();
         const li = document.createElement("li");
         li.textContent = `${data.name} - €${data.price}`;
@@ -341,26 +410,24 @@
       loadServices();
     };
 
-    // ========== CLIENTES ==========
+    // === CLIENTES ===
     async function loadClients() {
       const list = document.getElementById("clients-list");
       list.innerHTML = "";
       const snapshot = await getDocs(collection(db, "reservations"));
-      const clientesUnicos = {};
-      snapshot.forEach((docSnap) => {
+      const clientes = {};
+      snapshot.forEach(docSnap => {
         const d = docSnap.data();
-        if (!clientesUnicos[d.email]) {
-          clientesUnicos[d.email] = d.full_name;
-        }
+        if (!clientes[d.email]) clientes[d.email] = d.full_name;
       });
-      Object.entries(clientesUnicos).forEach(([email, name]) => {
+      Object.entries(clientes).forEach(([email, name]) => {
         const li = document.createElement("li");
         li.textContent = `${name} (${email})`;
         list.appendChild(li);
       });
     }
 
-    // ========== AJUSTES ==========
+    // === AJUSTES ===
     window.saveSettings = () => {
       const dir = document.getElementById("config-direccion").value;
       const hor = document.getElementById("config-horario").value;
@@ -371,13 +438,15 @@
     window.clearData = async () => {
       if (!confirm("¿Seguro que deseas eliminar todas las reservas y servicios?")) return;
       const reservasSnap = await getDocs(collection(db, "reservations"));
-      reservasSnap.forEach((docSnap) => deleteDoc(doc(db, "reservations", docSnap.id)));
+      reservasSnap.forEach(docSnap => deleteDoc(doc(db, "reservations", docSnap.id)));
       const serviciosSnap = await getDocs(collection(db, "services"));
-      serviciosSnap.forEach((docSnap) => deleteDoc(doc(db, "services", docSnap.id)));
+      serviciosSnap.forEach(docSnap => deleteDoc(doc(db, "services", docSnap.id)));
       alert("🗑️ Base de datos limpiada.");
     };
 
-    document.addEventListener("DOMContentLoaded", listenReservations);
+    document.addEventListener("DOMContentLoaded", () => {
+      listenReservations();
+    });
   </script>
 </body>
 </html>
