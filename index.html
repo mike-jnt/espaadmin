@@ -1,532 +1,262 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel de Administración - SPA Puerto Rico Mogán</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Reservas - SPA Puerto Rico Mogán</title>
 
   <style>
-    :root {
-      --color-primary: #4CAF50;
-      --color-secondary: #2F4F4F;
-      --color-bg: #f4f6f9;
-      --color-card: #ffffff;
-      --color-text: #333;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
-      background-color: var(--color-bg);
-      color: var(--color-text);
+      background-color: #f4f6f9;
+      color: #333;
       display: flex;
       min-height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
-    /* ===== SIDEBAR ===== */
+    /* Barra lateral */
     .sidebar {
       width: 250px;
-      background-color: var(--color-secondary);
+      background-color: #2F4F4F;
+      padding: 30px 20px;
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between;
       height: 100vh;
+      border-top-right-radius: 12px;
       position: fixed;
       top: 0;
       left: 0;
-      transition: transform 0.3s ease;
-      z-index: 100;
-      padding-bottom: 20px;
     }
 
     .sidebar h2 {
+      font-size: 26px;
+      color: #fff;
+      margin-bottom: 50px;
       text-align: center;
-      font-size: 22px;
-      margin: 20px 0;
     }
 
     .sidebar ul {
       list-style: none;
-      padding: 0 10px;
+      padding: 0;
     }
 
     .sidebar ul li {
       padding: 12px;
-      margin: 5px 0;
-      border-radius: 6px;
-      text-align: center;
+      margin: 10px 0;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 18px;
+      text-align: center;
       transition: background-color 0.3s;
     }
 
-    .sidebar ul li:hover,
-    .sidebar ul li.active {
-      background-color: var(--color-primary);
+    .sidebar ul li:hover {
+      background-color: #4CAF50;
     }
 
-    /* ===== MAIN CONTENT ===== */
+    /* Contenido principal */
     .main-content {
       margin-left: 250px;
-      flex: 1;
-      background-color: var(--color-card);
-      border-radius: 10px 0 0 10px;
-      padding: 25px;
-      min-height: 100vh;
+      padding: 30px;
+      background-color: #fff;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      width: calc(100% - 250px);
+      height: 100vh;
       overflow-y: auto;
-      transition: all 0.3s ease;
-      max-width: calc(100vw - 250px);
     }
 
-    section {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding-bottom: 60px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 15px;
     }
 
-    h1 {
-      font-size: 24px;
-      color: var(--color-secondary);
-      margin-bottom: 20px;
+    .header h1 {
+      font-size: 26px;
+      color: #2F4F4F;
     }
 
-    /* ===== FILTER BUTTONS ===== */
-    .filters {
+    .reservations-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
-
-    .filter-btn {
-      flex: 1 1 120px;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.3s;
-      text-align: center;
-    }
-
-    .filter-btn:hover { transform: scale(1.05); }
-    .all { background-color: #555; }
-    .pending { background-color: #f0ad4e; }
-    .attended { background-color: var(--color-primary); }
-    .postponed { background-color: #5bc0de; }
-    .filter-btn.active { outline: 3px solid #222; }
-
-    /* ===== RESERVAS GRID ===== */
-    .reservations-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
-      width: 100%;
+      justify-content: flex-start;
+      padding-bottom: 50px;
     }
 
     .reservation-card {
-      background-color: var(--color-card);
+      background-color: #fff;
+      width: 280px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      display: flex;
+      transition: transform 0.2s ease-in-out;
       flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s;
-      overflow-wrap: break-word;
     }
 
-    .reservation-card:hover { transform: scale(1.02); }
+    .reservation-card:hover {
+      transform: scale(1.02);
+    }
 
     .reservation-info p {
-      margin: 5px 0;
+      margin: 6px 0;
       font-size: 14px;
-      word-break: break-word;
     }
 
-    .name {
-      font-weight: 600;
-      color: var(--color-secondary);
+    .reservation-info .name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #2F4F4F;
     }
 
-    .status-button,
-    .postpone-button {
+    .status-button, .postpone-button {
       padding: 10px;
       border: none;
       border-radius: 8px;
-      color: white;
       cursor: pointer;
+      color: white;
+      font-size: 14px;
+      width: 100%;
       margin-top: 8px;
-      font-size: 14px;
     }
 
-    .status-button { background-color: var(--color-primary); }
+    .status-button { background-color: #4CAF50; }
     .postpone-button { background-color: #f0ad4e; }
-
-    /* ===== INPUTS ===== */
-    .input-field {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      font-size: 15px;
-    }
-
-    .add-btn {
-      background-color: var(--color-primary);
-      border: none;
-      color: white;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .add-btn:hover { background-color: #3f9244; }
-
-    ul.item-list {
-      list-style: none;
-      padding: 0;
-      margin-top: 10px;
-      width: 100%;
-    }
-
-    ul.item-list li {
-      background: #f8f8f8;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 5px;
-      font-size: 15px;
-      border: 1px solid #ddd;
-      overflow-wrap: break-word;
-    }
-
-    /* ===== RESPONSIVE ADJUSTMENTS ===== */
-    @media (max-width: 992px) {
-      .sidebar {
-        transform: translateX(-250px);
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        border-radius: 0;
-        padding-top: 70px;
-      }
-      .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: var(--color-primary);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 18px;
-        cursor: pointer;
-        z-index: 110;
-      }
-    }
-
-    @media (max-width: 576px) {
-      h1 { font-size: 20px; }
-      .filter-btn { flex: 1 1 100%; }
-      .reservation-card { padding: 15px; }
-      .input-field, .add-btn { font-size: 14px; }
-    }
+    .status-button:hover { background-color: #45a049; }
+    .postpone-button:hover { background-color: #e69500; }
   </style>
 </head>
 
 <body>
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar">
     <h2>SPA Admin</h2>
     <ul>
-      <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
-      <li id="menu-servicios" onclick="showSection('servicios')">Servicios</li>
-      <li id="menu-clientes" onclick="showSection('clientes')">Clientes</li>
-      <li id="menu-ajustes" onclick="showSection('ajustes')">Ajustes</li>
+      <li onclick="showReservations()">Reservas</li>
+      <li onclick="showServices()">Servicios</li>
+      <li onclick="showClients()">Clientes</li>
+      <li onclick="showSettings()">Ajustes</li>
     </ul>
   </div>
 
-  <button class="toggle-btn" onclick="toggleMenu()">☰</button>
+  <div class="main-content" id="main-content">
+    <div class="header">
+      <h1>Reservas registradas</h1>
+      <p style="font-size:14px; color:#666;">(Actualización automática en tiempo real ⚡)</p>
+    </div>
 
-  <div class="main-content">
-    <section id="reservas">
-      <h1>Reservas en tiempo real ⚡</h1>
-      <div class="filters">
-        <button class="filter-btn all active" onclick="setFilter('all', this)">Todas</button>
-        <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
-        <button class="filter-btn attended" onclick="setFilter('Atendido', this)">Atendidas</button>
-        <button class="filter-btn postponed" onclick="setFilter('Aplazado', this)">Aplazadas</button>
-      </div>
-      <div id="reservations-container" class="reservations-container"></div>
-    </section>
-
-    <section id="servicios" class="hidden">
-      <h1>Gestión de Servicios</h1>
-      <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
-      <input type="number" id="service-price" class="input-field" placeholder="Precio (€)" />
-      <button class="add-btn" onclick="addService()">Agregar servicio</button>
-      <ul id="service-list" class="item-list"></ul>
-    </section>
-
-    <section id="clientes" class="hidden">
-      <h1>Clientes registrados</h1>
-      <ul id="clients-list" class="item-list"></ul>
-    </section>
-
-    <section id="ajustes" class="hidden">
-      <h1>Configuración del Negocio</h1>
-      <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
-      <input id="config-horario" class="input-field" placeholder="Horario de atención" />
-      <button class="add-btn" onclick="saveSettings()">Guardar ajustes</button>
-      <button class="add-btn" style="background:#d9534f" onclick="clearData()">Limpiar base de datos</button>
-    </section>
+    <div id="reservations-container" class="reservations-container">
+      <p>Cargando reservas...</p>
+    </div>
   </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    onSnapshot,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc
-  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  <!-- Firebase Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      onSnapshot,
+      updateDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-  // 🔥 Configuración Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
-    authDomain: "spaspa-30bad.firebaseapp.com",
-    projectId: "spaspa-30bad",
-    storageBucket: "spaspa-30bad.firebasestorage.app",
-    messagingSenderId: "262101316591",
-    appId: "1:262101316591:web:5c250165b10ef314373c1a",
-  };
+    // 🔥 Configuración Firebase (misma que index.html)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
+      authDomain: "spaspa-30bad.firebaseapp.com",
+      projectId: "spaspa-30bad",
+      storageBucket: "spaspa-30bad.firebasestorage.app",
+      messagingSenderId: "262101316591",
+      appId: "1:262101316591:web:5c250165b10ef314373c1a",
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  let allReservations = [];
-  let currentFilter = "all";
-  let currentPostponeId = null;
+    // 🔁 Escucha en tiempo real los cambios en la colección "reservations"
+    function listenReservations() {
+      const container = document.getElementById("reservations-container");
+      container.innerHTML = "<p>Escuchando cambios en la base de datos...</p>";
 
-  // ========== NAVEGACIÓN ENTRE SECCIONES ==========
-  window.toggleMenu = () => {
-    document.getElementById("sidebar").classList.toggle("open");
-  };
+      const q = collection(db, "reservations");
 
-  // Mostrar solo la sección seleccionada
-  window.showSection = (id) => {
-    // Oculta todas las secciones
-    document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
-    // Muestra la seleccionada
-    document.getElementById(id).classList.remove("hidden");
+      onSnapshot(q, (snapshot) => {
+        container.innerHTML = "";
 
-    // Actualiza el menú activo
-    document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
-    document.getElementById("menu-" + id).classList.add("active");
+        if (snapshot.empty) {
+          container.innerHTML = "<p>No hay reservas registradas.</p>";
+          return;
+        }
 
-    // Ejecuta cargas dinámicas
-    if (id === "servicios") loadServices();
-    if (id === "clientes") loadClients();
-  };
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
 
-  // Ocultar todas las secciones al iniciar
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
-  });
+          const card = document.createElement("div");
+          card.classList.add("reservation-card");
 
-  // ========== RESERVAS EN TIEMPO REAL ==========
-  function listenReservations() {
-    const q = collection(db, "reservations");
-    onSnapshot(q, (snapshot) => {
-      allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
-      if (!document.getElementById("reservas").classList.contains("hidden")) {
-        renderReservations();
-      }
-    });
-  }
+          card.innerHTML = `
+            <div class="reservation-info">
+              <p class="name">${data.full_name || "(Sin nombre)"}</p>
+              <p><strong>Teléfono:</strong> ${data.phone || "—"}</p>
+              <p><strong>Correo:</strong> ${data.email || "—"}</p>
+              <p><strong>Servicio:</strong> ${data.massage_type || "—"}</p>
+              <p><strong>Fecha:</strong> ${data.date || "—"}</p>
+              <p><strong>Hora:</strong> ${data.time || "—"}</p>
+              <p><strong>Estado:</strong> ${data.status || "Pendiente"}</p>
+              <p><strong>Código:</strong> ${data.reservation_code || "N/A"}</p>
+            </div>
+            <button class="status-button" onclick="updateStatus('${docSnap.id}', '${data.status}')">Cambiar estado</button>
+            <button class="postpone-button" onclick="postponeReservation('${docSnap.id}')">Aplazar</button>
+          `;
 
-  function renderReservations() {
-    const container = document.getElementById("reservations-container");
-    container.innerHTML = "";
-    const filtered = currentFilter === "all"
-      ? allReservations
-      : allReservations.filter(r => r.status === currentFilter);
-
-    if (filtered.length === 0) {
-      container.innerHTML = "<p>No hay reservas para mostrar.</p>";
-      return;
-    }
-
-    filtered.forEach(data => {
-      const card = document.createElement("div");
-      card.classList.add("reservation-card");
-      card.innerHTML = `
-        <div class="reservation-info">
-          <p class="name">${data.full_name}</p>
-          <p><strong>Teléfono:</strong> ${data.phone}</p>
-          <p><strong>Servicio:</strong> ${data.massage_type}</p>
-          <p><strong>Fecha:</strong> ${data.date}</p>
-          <p><strong>Hora:</strong> ${data.time}</p>
-          <p><strong>Estado:</strong> ${data.status}</p>
-        </div>
-        <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
-        <button class="postpone-button" onclick="openPostponeModal('${data.id}')">Aplazar</button>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  window.setFilter = (filter, btn) => {
-    currentFilter = filter;
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    renderReservations();
-  };
-
-  window.updateStatus = async (id, status) => {
-    const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
-    await updateDoc(doc(db, "reservations", id), { status: newStatus });
-  };
-
-  // ========== APLAZAR CON FECHA ==========
-  function createPostponeModal() {
-    const modal = document.createElement("div");
-    modal.id = "postpone-modal";
-    Object.assign(modal.style, {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0,0,0,0.5)",
-      display: "none",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: "999"
-    });
-
-    modal.innerHTML = `
-      <div style="background:white; padding:30px; border-radius:12px; width:90%; max-width:350px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-        <h3>Seleccionar nueva fecha</h3>
-        <input type="date" id="new-date" style="margin:20px 0; padding:10px; width:100%; font-size:16px; border-radius:8px; border:1px solid #ccc;">
-        <div style="display:flex; gap:10px; justify-content:center;">
-          <button id="save-date" style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Guardar</button>
-          <button id="cancel-modal" style="background:#d9534f; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Cancelar</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  createPostponeModal();
-
-  window.openPostponeModal = (id) => {
-    currentPostponeId = id;
-    document.getElementById("postpone-modal").style.display = "flex";
-  };
-
-  document.body.addEventListener("click", async (e) => {
-    if (e.target.id === "cancel-modal") {
-      document.getElementById("postpone-modal").style.display = "none";
-      currentPostponeId = null;
-    }
-
-    if (e.target.id === "save-date") {
-      const newDate = document.getElementById("new-date").value;
-      if (!newDate) {
-        alert("Selecciona una fecha válida para aplazar la cita.");
-        return;
-      }
-
-      await updateDoc(doc(db, "reservations", currentPostponeId), {
-        status: "Aplazado",
-        date: newDate,
+          container.appendChild(card);
+        });
+      }, (error) => {
+        console.error("❌ Error escuchando Firestore:", error);
+        container.innerHTML = `<p>Error al conectar con la base de datos: ${error.message}</p>`;
       });
-
-      alert("✅ Reserva aplazada para el " + newDate);
-      document.getElementById("postpone-modal").style.display = "none";
-      currentPostponeId = null;
     }
-  });
 
-  // ========== SERVICIOS ==========
-  async function loadServices() {
-    const list = document.getElementById("service-list");
-    list.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "services"));
-    snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const li = document.createElement("li");
-      li.textContent = `${data.name} - €${data.price}`;
-      list.appendChild(li);
-    });
-  }
+    // Cambiar estado entre Pendiente / Atendido
+    window.updateStatus = async function (id, currentStatus) {
+      const newStatus = currentStatus === "Pendiente" ? "Atendido" : "Pendiente";
+      try {
+        await updateDoc(doc(db, "reservations", id), { status: newStatus });
+        console.log(`✅ Estado actualizado a: ${newStatus}`);
+      } catch (error) {
+        console.error("Error al actualizar estado:", error);
+      }
+    };
 
-  window.addService = async () => {
-    const name = document.getElementById("service-name").value;
-    const price = document.getElementById("service-price").value;
-    if (!name || !price) return alert("Completa todos los campos.");
-    await addDoc(collection(db, "services"), { name, price });
-    document.getElementById("service-name").value = "";
-    document.getElementById("service-price").value = "";
-    loadServices();
-  };
+    // Aplazar reserva
+    window.postponeReservation = async function (id) {
+      try {
+        await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
+        console.log("📅 Reserva aplazada correctamente.");
+      } catch (error) {
+        console.error("Error al aplazar reserva:", error);
+      }
+    };
 
-  // ========== CLIENTES ==========
-  async function loadClients() {
-    const list = document.getElementById("clients-list");
-    list.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "reservations"));
-    const clientes = {};
-    snapshot.forEach(docSnap => {
-      const d = docSnap.data();
-      if (!clientes[d.email]) clientes[d.email] = d.full_name;
-    });
-    Object.entries(clientes).forEach(([email, name]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name} (${email})`;
-      list.appendChild(li);
-    });
-  }
+    // Cargar automáticamente al abrir
+    document.addEventListener("DOMContentLoaded", listenReservations);
 
-  // ========== AJUSTES ==========
-  window.saveSettings = () => {
-    const dir = document.getElementById("config-direccion").value;
-    const hor = document.getElementById("config-horario").value;
-    localStorage.setItem("spa_config", JSON.stringify({ dir, hor }));
-    alert("✅ Ajustes guardados correctamente");
-  };
-
-  window.clearData = async () => {
-    if (!confirm("¿Seguro que deseas eliminar todas las reservas y servicios?")) return;
-    const reservasSnap = await getDocs(collection(db, "reservations"));
-    reservasSnap.forEach(docSnap => deleteDoc(doc(db, "reservations", docSnap.id)));
-    const serviciosSnap = await getDocs(collection(db, "services"));
-    serviciosSnap.forEach(docSnap => deleteDoc(doc(db, "services", docSnap.id)));
-    alert("🗑️ Base de datos limpiada.");
-  };
-
-  // Inicia la escucha de reservas (sin mostrar sección aún)
-  document.addEventListener("DOMContentLoaded", () => {
-    listenReservations();
-  });
-</script>
-
-
-
-
-  
+    // Evitar errores por secciones no implementadas aún
+    window.showReservations = () => console.log("Sección Reservas aún no implementada");
+    window.showServices = () => console.log("Sección Servicios aún no implementada");
+    window.showClients = () => console.log("Sección Clientes aún no implementada");
+    window.showSettings = () => console.log("Sección Ajustes aún no implementada");
+    window.filterReservations = (status) => console.log("Filtro no implementado:", status);
+  </script>
 </body>
 </html>
