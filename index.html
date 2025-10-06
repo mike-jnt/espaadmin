@@ -400,218 +400,99 @@
         </div>
     </div>
 
-    <script>
-        // Datos simulados de reservas
-        let reservations = [
-            { name: "Ana López", phone: "311 555 7823", service: "Masaje relajante", date: "15/09/2025", time: "10:00", status: "Pendiente" },
-            { name: "Carlos Méndez", phone: "321 555 9047", service: "Masaje relajante", date: "15/09/2025", time: "11:00", status: "Pendiente" },
-            { name: "Laura García", phone: "315 555 6861", service: "Tratamiento facial", date: "15/09/2025", time: "11:30", status: "Atendido" },
-            { name: "Javier Torres", phone: "314 555 3278", service: "Masaje de tejido profundo", date: "15/09/2025", time: "13:00", status: "Aplazado" }
-        ];
+   <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    updateDoc,
+    doc
+  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-        let services = [];
-        let clients = [];
+  // 🟢 MISMA CONFIGURACIÓN EXACTA QUE INDEX.HTML
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
+    authDomain: "spaspa-30bad.firebaseapp.com",
+    projectId: "spaspa-30bad",
+    storageBucket: "spaspa-30bad.firebasestorage.app",
+    messagingSenderId: "262101316591",
+    appId: "1:262101316591:web:5c250165b10ef314373c1a",
+  };
 
-        // Función para mostrar reservas
-        function showReservations() {
-            document.getElementById('services-section').style.display = 'none';
-            document.getElementById('clients-section').style.display = 'none';
-            document.getElementById('settings-section').style.display = 'none';
-            document.getElementById('reservas-section').style.display = 'block';
-            displayReservations();
-        }
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        // Función para mostrar servicios
-        function showServices() {
-            document.getElementById('reservas-section').style.display = 'none';
-            document.getElementById('clients-section').style.display = 'none';
-            document.getElementById('settings-section').style.display = 'none';
-            document.getElementById('services-section').style.display = 'block';
-        }
+  async function loadReservations() {
+    const container = document.getElementById("reservations-container");
+    container.innerHTML = "<p>Cargando reservas...</p>";
 
-        // Función para mostrar clientes
-        function showClients() {
-            document.getElementById('services-section').style.display = 'none';
-            document.getElementById('reservas-section').style.display = 'none';
-            document.getElementById('settings-section').style.display = 'none';
-            document.getElementById('clients-section').style.display = 'block';
-            displayClients();
-        }
+    try {
+      const querySnapshot = await getDocs(collection(db, "reservations"));
+      console.log("📦 Documentos obtenidos:", querySnapshot.size);
 
-        // Función para mostrar ajustes
-        function showSettings() {
-            document.getElementById('services-section').style.display = 'none';
-            document.getElementById('reservas-section').style.display = 'none';
-            document.getElementById('clients-section').style.display = 'none';
-            document.getElementById('settings-section').style.display = 'block';
-        }
+      container.innerHTML = "";
 
-        // Función para mostrar todas las reservas
-        function displayReservations() {
-            const pendingContainer = document.getElementById('reservations-pending');
-            const attendedContainer = document.getElementById('reservations-attended');
-            const delayedContainer = document.getElementById('reservations-delayed');
+      if (querySnapshot.empty) {
+        container.innerHTML = "<p>No hay reservas registradas en la base de datos.</p>";
+        return;
+      }
 
-            pendingContainer.innerHTML = "<h3>Pendientes</h3>";
-            attendedContainer.innerHTML = "<h3>Atendidas</h3>";
-            delayedContainer.innerHTML = "<h3>Aplazadas</h3>";
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        console.log("🧾 Reserva:", data);
 
-            reservations.forEach(reservation => {
-                const reservationElement = document.createElement('div');
-                reservationElement.classList.add('reservation-card');
-                reservationElement.innerHTML = `
-                    <div class="reservation-info">
-                        <p class="name">${reservation.name}</p>
-                        <p>Tel: ${reservation.phone}</p>
-                        <p>Servicio: ${reservation.service}</p>
-                        <p>Fecha: ${reservation.date}</p>
-                        <p>Hora: ${reservation.time}</p>
-                    </div>
-                    <div>
-                        <button class="status-button ${reservation.status.toLowerCase()}" onclick="updateStatus('${reservation.name}')">
-                            ${reservation.status}
-                        </button>
-                        <button class="postpone-button" onclick="postponeReservation('${reservation.name}')">
-                            Aplazar
-                        </button>
-                        <button class="save-client-button" onclick="saveClient('${reservation.name}')">
-                            Guardar Cliente
-                        </button>
-                    </div>
-                `;
+        const card = document.createElement("div");
+        card.classList.add("reservation-card");
 
-                if (reservation.status === "Pendiente") {
-                    pendingContainer.appendChild(reservationElement);
-                } else if (reservation.status === "Atendido") {
-                    attendedContainer.appendChild(reservationElement);
-                } else if (reservation.status === "Aplazado") {
-                    delayedContainer.appendChild(reservationElement);
-                }
-            });
-        }
+        card.innerHTML = `
+          <div class="reservation-info">
+            <p class="name">${data.full_name || "(Sin nombre)"}</p>
+            <p><strong>Teléfono:</strong> ${data.phone || "—"}</p>
+            <p><strong>Correo:</strong> ${data.email || "—"}</p>
+            <p><strong>Servicio:</strong> ${data.massage_type || "—"}</p>
+            <p><strong>Fecha:</strong> ${data.date || "—"}</p>
+            <p><strong>Hora:</strong> ${data.time || "—"}</p>
+            <p><strong>Estado:</strong> ${data.status || "Pendiente"}</p>
+            <p><strong>Código:</strong> ${data.reservation_code || "N/A"}</p>
+          </div>
+          <button class="status-button" onclick="updateStatus('${docSnap.id}', '${data.status}')">Cambiar estado</button>
+          <button class="postpone-button" onclick="postponeReservation('${docSnap.id}')">Aplazar</button>
+        `;
 
-        // Función para filtrar reservas
-        function filterReservations(status) {
-            document.getElementById('reservations-pending').style.display = 'none';
-            document.getElementById('reservations-attended').style.display = 'none';
-            document.getElementById('reservations-delayed').style.display = 'none';
+        container.appendChild(card);
+      });
+    } catch (error) {
+      console.error("❌ Error al leer Firestore:", error);
+      container.innerHTML = `<p>Error al cargar las reservas: ${error.message}</p>`;
+    }
+  }
 
-            if (status === 'all') {
-                document.getElementById('reservations-pending').style.display = 'block';
-                document.getElementById('reservations-attended').style.display = 'block';
-                document.getElementById('reservations-delayed').style.display = 'block';
-            } else {
-                document.getElementById(`reservations-${status}`).style.display = 'block';
-            }
-        }
+  // Cambiar estado
+  window.updateStatus = async function (id, currentStatus) {
+    const newStatus = currentStatus === "Pendiente" ? "Atendido" : "Pendiente";
+    try {
+      await updateDoc(doc(db, "reservations", id), { status: newStatus });
+      alert(`Estado actualizado a: ${newStatus}`);
+      loadReservations();
+    } catch (error) {
+      console.error("Error al actualizar estado:", error);
+    }
+  };
 
-        // Función para cambiar el estado de la reserva
-        function updateStatus(name) {
-            const reservation = reservations.find(r => r.name === name);
-            if (reservation) {
-                reservation.status = reservation.status === "Pendiente" ? "Atendido" : "Pendiente";
-                displayReservations(); // Actualizar la lista de reservas
-            }
-        }
+  // Aplazar reserva
+  window.postponeReservation = async function (id) {
+    try {
+      await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
+      alert("Reserva aplazada correctamente.");
+      loadReservations();
+    } catch (error) {
+      console.error("Error al aplazar reserva:", error);
+    }
+  };
 
-        // Función para aplazar la reserva
-        function postponeReservation(name) {
-            const reservation = reservations.find(r => r.name === name);
-            if (reservation) {
-                reservation.status = "Aplazado";
-                displayReservations(); // Actualizar la lista de reservas
-            }
-        }
+  loadReservations();
+</script>
 
-        // Función para guardar cliente
-        function saveClient(name) {
-            const reservation = reservations.find(r => r.name === name);
-            if (reservation && !clients.includes(reservation.name)) {
-                clients.push(reservation.name);
-                displayClients();
-                alert(`${reservation.name} ha sido guardado como cliente.`);
-            } else {
-                alert('Este cliente ya está guardado.');
-            }
-        }
-
-        // Función para mostrar clientes guardados
-        function displayClients() {
-            const clientsList = document.getElementById('clients-list');
-            clientsList.innerHTML = ''; // Limpiar la lista de clientes
-
-            clients.forEach(client => {
-                const clientElement = document.createElement('li');
-                clientElement.textContent = client;
-                clientsList.appendChild(clientElement);
-            });
-        }
-        
-        // Función para guardar información del SPA
-        function saveBusinessInfo() {
-            const spaName = document.getElementById('spa-name').value;
-            const spaAddress = document.getElementById('spa-address').value;
-            const spaPhone = document.getElementById('spa-phone').value;
-            const spaEmail = document.getElementById('spa-email').value;
-
-            // Guardar en localStorage
-            localStorage.setItem('spaName', spaName);
-            localStorage.setItem('spaAddress', spaAddress);
-            localStorage.setItem('spaPhone', spaPhone);
-            localStorage.setItem('spaEmail', spaEmail);
-
-            alert('Información del SPA guardada.');
-        }
-
-        // Función para guardar horarios de atención
-        function saveWorkingHours() {
-            const openTime = document.getElementById('open-time').value;
-            const closeTime = document.getElementById('close-time').value;
-            const workingDays = document.getElementById('working-days').value;
-
-            // Guardar en localStorage
-            localStorage.setItem('openTime', openTime);
-            localStorage.setItem('closeTime', closeTime);
-            localStorage.setItem('workingDays', workingDays);
-
-            alert('Horarios de atención guardados.');
-        }
-
-        // Función para guardar notificaciones
-        function saveNotifications() {
-            const notifyReservations = document.getElementById('notify-reservations').checked;
-            const notifyReminders = document.getElementById('notify-reminders').checked;
-
-            // Guardar en localStorage
-            localStorage.setItem('notifyReservations', notifyReservations);
-            localStorage.setItem('notifyReminders', notifyReminders);
-
-            alert('Notificaciones guardadas.');
-        }
-
-        // Limpiar datos de reservas
-        function clearReservations() {
-            localStorage.removeItem('reservations');
-            alert('Reservas eliminadas.');
-            location.reload();
-        }
-
-        // Limpiar datos de servicios
-        function clearServices() {
-            localStorage.removeItem('services');
-            alert('Servicios eliminados.');
-            location.reload();
-        }
-
-        // Limpiar datos de clientes
-        function clearClients() {
-            localStorage.removeItem('clients');
-            alert('Clientes eliminados.');
-            location.reload();
-        }
-        
-        // Inicializar mostrando las reservas
-        showReservations();
-    </script>
 </body>
 </html>
