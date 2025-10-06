@@ -17,7 +17,7 @@
       overflow: hidden;
     }
 
-    /* Barra lateral */
+    /* Sidebar */
     .sidebar {
       width: 250px;
       background-color: #2F4F4F;
@@ -59,7 +59,7 @@
       background-color: #4CAF50;
     }
 
-    /* Contenido principal */
+    /* Main content */
     .main-content {
       margin-left: 250px;
       padding: 30px;
@@ -76,7 +76,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       border-bottom: 1px solid #ddd;
       padding-bottom: 15px;
     }
@@ -86,6 +86,37 @@
       color: #2F4F4F;
     }
 
+    /* Filter buttons */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .filter-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .all { background-color: #555; }
+    .pending { background-color: #f0ad4e; }
+    .attended { background-color: #4CAF50; }
+    .postponed { background-color: #5bc0de; }
+
+    .filter-btn.active {
+      outline: 3px solid #222;
+    }
+
+    /* Reservations grid */
     .reservations-container {
       display: flex;
       flex-wrap: wrap;
@@ -148,10 +179,17 @@
     </ul>
   </div>
 
-  <div class="main-content" id="main-content">
+  <div class="main-content">
     <div class="header">
       <h1>Reservas registradas</h1>
-      <p style="font-size:14px; color:#666;">(Actualización automática en tiempo real ⚡)</p>
+      <p style="font-size:14px; color:#666;">(Actualización en tiempo real ⚡)</p>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn all active" onclick="setFilter('all', this)">Todas</button>
+      <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
+      <button class="filter-btn attended" onclick="setFilter('Atendido', this)">Atendidas</button>
+      <button class="filter-btn postponed" onclick="setFilter('Aplazado', this)">Aplazadas</button>
     </div>
 
     <div id="reservations-container" class="reservations-container">
@@ -170,7 +208,6 @@
       doc
     } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-    // 🔥 Configuración Firebase (misma que index.html)
     const firebaseConfig = {
       apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
       authDomain: "spaspa-30bad.firebaseapp.com",
@@ -183,80 +220,92 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 🔁 Escucha en tiempo real los cambios en la colección "reservations"
+    let allReservations = [];
+    let currentFilter = "all";
+
+    // 🔁 Escucha en tiempo real
     function listenReservations() {
       const container = document.getElementById("reservations-container");
-      container.innerHTML = "<p>Escuchando cambios en la base de datos...</p>";
+      container.innerHTML = "<p>Escuchando reservas en tiempo real...</p>";
 
       const q = collection(db, "reservations");
 
       onSnapshot(q, (snapshot) => {
-        container.innerHTML = "";
-
-        if (snapshot.empty) {
-          container.innerHTML = "<p>No hay reservas registradas.</p>";
-          return;
-        }
-
+        allReservations = [];
         snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-
-          const card = document.createElement("div");
-          card.classList.add("reservation-card");
-
-          card.innerHTML = `
-            <div class="reservation-info">
-              <p class="name">${data.full_name || "(Sin nombre)"}</p>
-              <p><strong>Teléfono:</strong> ${data.phone || "—"}</p>
-              <p><strong>Correo:</strong> ${data.email || "—"}</p>
-              <p><strong>Servicio:</strong> ${data.massage_type || "—"}</p>
-              <p><strong>Fecha:</strong> ${data.date || "—"}</p>
-              <p><strong>Hora:</strong> ${data.time || "—"}</p>
-              <p><strong>Estado:</strong> ${data.status || "Pendiente"}</p>
-              <p><strong>Código:</strong> ${data.reservation_code || "N/A"}</p>
-            </div>
-            <button class="status-button" onclick="updateStatus('${docSnap.id}', '${data.status}')">Cambiar estado</button>
-            <button class="postpone-button" onclick="postponeReservation('${docSnap.id}')">Aplazar</button>
-          `;
-
-          container.appendChild(card);
+          allReservations.push({ id: docSnap.id, ...docSnap.data() });
         });
-      }, (error) => {
-        console.error("❌ Error escuchando Firestore:", error);
-        container.innerHTML = `<p>Error al conectar con la base de datos: ${error.message}</p>`;
+        renderReservations();
       });
     }
 
-    // Cambiar estado entre Pendiente / Atendido
+    // 🎨 Render según filtro
+    function renderReservations() {
+      const container = document.getElementById("reservations-container");
+      container.innerHTML = "";
+
+      let filtered = allReservations;
+      if (currentFilter !== "all") {
+        filtered = allReservations.filter(r => r.status === currentFilter);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>No hay reservas para mostrar.</p>";
+        return;
+      }
+
+      filtered.forEach((data) => {
+        const card = document.createElement("div");
+        card.classList.add("reservation-card");
+
+        card.innerHTML = `
+          <div class="reservation-info">
+            <p class="name">${data.full_name || "(Sin nombre)"}</p>
+            <p><strong>Teléfono:</strong> ${data.phone || "—"}</p>
+            <p><strong>Correo:</strong> ${data.email || "—"}</p>
+            <p><strong>Servicio:</strong> ${data.massage_type || "—"}</p>
+            <p><strong>Fecha:</strong> ${data.date || "—"}</p>
+            <p><strong>Hora:</strong> ${data.time || "—"}</p>
+            <p><strong>Estado:</strong> ${data.status || "Pendiente"}</p>
+            <p><strong>Código:</strong> ${data.reservation_code || "N/A"}</p>
+          </div>
+          <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
+          <button class="postpone-button" onclick="postponeReservation('${data.id}')">Aplazar</button>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // 🎚️ Cambiar filtro activo
+    window.setFilter = (filter, btn) => {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderReservations();
+    };
+
+    // 🔄 Cambiar estado
     window.updateStatus = async function (id, currentStatus) {
       const newStatus = currentStatus === "Pendiente" ? "Atendido" : "Pendiente";
-      try {
-        await updateDoc(doc(db, "reservations", id), { status: newStatus });
-        console.log(`✅ Estado actualizado a: ${newStatus}`);
-      } catch (error) {
-        console.error("Error al actualizar estado:", error);
-      }
+      await updateDoc(doc(db, "reservations", id), { status: newStatus });
+      console.log(`✅ Estado cambiado a ${newStatus}`);
     };
 
-    // Aplazar reserva
+    // 🕓 Aplazar
     window.postponeReservation = async function (id) {
-      try {
-        await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
-        console.log("📅 Reserva aplazada correctamente.");
-      } catch (error) {
-        console.error("Error al aplazar reserva:", error);
-      }
+      await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
+      console.log("📅 Reserva aplazada.");
     };
 
-    // Cargar automáticamente al abrir
+    // 🧠 Inicialización
     document.addEventListener("DOMContentLoaded", listenReservations);
 
-    // Evitar errores por secciones no implementadas aún
-    window.showReservations = () => console.log("Sección Reservas aún no implementada");
-    window.showServices = () => console.log("Sección Servicios aún no implementada");
-    window.showClients = () => console.log("Sección Clientes aún no implementada");
-    window.showSettings = () => console.log("Sección Ajustes aún no implementada");
-    window.filterReservations = (status) => console.log("Filtro no implementado:", status);
+    // Evitar errores de secciones aún no implementadas
+    window.showReservations = () => console.log("Sección Reservas");
+    window.showServices = () => console.log("Sección Servicios");
+    window.showClients = () => console.log("Sección Clientes");
+    window.showSettings = () => console.log("Sección Ajustes");
   </script>
 </body>
 </html>
