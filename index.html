@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel de Administración - SPA Puerto Rico Mogán</title>
 
   <style>
@@ -32,13 +32,14 @@
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       height: 100vh;
       position: fixed;
       top: 0;
       left: 0;
       transition: transform 0.3s ease;
       z-index: 100;
+      padding-bottom: 20px;
     }
 
     .sidebar h2 {
@@ -49,16 +50,16 @@
 
     .sidebar ul {
       list-style: none;
-      padding: 0;
+      padding: 0 10px;
     }
 
     .sidebar ul li {
-      padding: 15px;
+      padding: 12px;
+      margin: 5px 0;
+      border-radius: 6px;
       text-align: center;
       cursor: pointer;
       transition: background-color 0.3s;
-      border-radius: 6px;
-      margin: 5px 10px;
     }
 
     .sidebar ul li:hover,
@@ -72,24 +73,23 @@
       flex: 1;
       background-color: var(--color-card);
       border-radius: 10px 0 0 10px;
-      padding: 20px;
+      padding: 25px;
+      min-height: 100vh;
       overflow-y: auto;
-      height: 100vh;
       transition: all 0.3s ease;
+      max-width: calc(100vw - 250px);
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 60px;
     }
 
     h1 {
       font-size: 24px;
       color: var(--color-secondary);
+      margin-bottom: 20px;
     }
 
     /* ===== FILTER BUTTONS ===== */
@@ -101,15 +101,15 @@
     }
 
     .filter-btn {
-      flex: 1 1 100px;
+      flex: 1 1 120px;
       padding: 10px;
       border: none;
       border-radius: 8px;
       color: white;
       font-weight: 500;
       cursor: pointer;
+      transition: 0.3s;
       text-align: center;
-      transition: all 0.3s;
     }
 
     .filter-btn:hover { transform: scale(1.05); }
@@ -119,22 +119,24 @@
     .postponed { background-color: #5bc0de; }
     .filter-btn.active { outline: 3px solid #222; }
 
-    /* ===== RESERVATIONS GRID ===== */
+    /* ===== RESERVAS GRID ===== */
     .reservations-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
+      width: 100%;
     }
 
     .reservation-card {
       background-color: var(--color-card);
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: transform 0.2s;
+      overflow-wrap: break-word;
     }
 
     .reservation-card:hover { transform: scale(1.02); }
@@ -142,15 +144,16 @@
     .reservation-info p {
       margin: 5px 0;
       font-size: 14px;
+      word-break: break-word;
     }
 
     .name {
-      font-size: 16px;
       font-weight: 600;
       color: var(--color-secondary);
     }
 
-    .status-button, .postpone-button {
+    .status-button,
+    .postpone-button {
       padding: 10px;
       border: none;
       border-radius: 8px;
@@ -163,7 +166,7 @@
     .status-button { background-color: var(--color-primary); }
     .postpone-button { background-color: #f0ad4e; }
 
-    /* ===== FORMS & INPUTS ===== */
+    /* ===== INPUTS ===== */
     .input-field {
       width: 100%;
       padding: 10px;
@@ -180,7 +183,6 @@
       padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: 500;
       transition: 0.3s;
     }
 
@@ -190,6 +192,7 @@
       list-style: none;
       padding: 0;
       margin-top: 10px;
+      width: 100%;
     }
 
     ul.item-list li {
@@ -199,9 +202,10 @@
       margin-bottom: 5px;
       font-size: 15px;
       border: 1px solid #ddd;
+      overflow-wrap: break-word;
     }
 
-    /* ===== MOBILE RESPONSIVENESS ===== */
+    /* ===== RESPONSIVE ADJUSTMENTS ===== */
     @media (max-width: 992px) {
       .sidebar {
         transform: translateX(-250px);
@@ -211,6 +215,8 @@
       }
       .main-content {
         margin-left: 0;
+        max-width: 100%;
+        border-radius: 0;
         padding-top: 70px;
       }
       .toggle-btn {
@@ -222,16 +228,22 @@
         border: none;
         border-radius: 6px;
         padding: 8px 12px;
-        font-size: 16px;
+        font-size: 18px;
         cursor: pointer;
         z-index: 110;
       }
+    }
+
+    @media (max-width: 576px) {
+      h1 { font-size: 20px; }
+      .filter-btn { flex: 1 1 100%; }
+      .reservation-card { padding: 15px; }
+      .input-field, .add-btn { font-size: 14px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <h2>SPA Admin</h2>
     <ul>
@@ -242,30 +254,20 @@
     </ul>
   </div>
 
-  <!-- Toggle for mobile -->
   <button class="toggle-btn" onclick="toggleMenu()">☰</button>
 
-  <!-- Main content -->
   <div class="main-content">
-    <!-- SECCIÓN: RESERVAS -->
     <section id="reservas">
-      <div class="header">
-        <h1>Reservas en tiempo real ⚡</h1>
-      </div>
-
+      <h1>Reservas en tiempo real ⚡</h1>
       <div class="filters">
         <button class="filter-btn all active" onclick="setFilter('all', this)">Todas</button>
         <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
         <button class="filter-btn attended" onclick="setFilter('Atendido', this)">Atendidas</button>
         <button class="filter-btn postponed" onclick="setFilter('Aplazado', this)">Aplazadas</button>
       </div>
-
-      <div id="reservations-container" class="reservations-container">
-        <p>Cargando reservas...</p>
-      </div>
+      <div id="reservations-container" class="reservations-container"></div>
     </section>
 
-    <!-- SECCIÓN: SERVICIOS -->
     <section id="servicios" class="hidden">
       <h1>Gestión de Servicios</h1>
       <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
@@ -274,13 +276,11 @@
       <ul id="service-list" class="item-list"></ul>
     </section>
 
-    <!-- SECCIÓN: CLIENTES -->
     <section id="clientes" class="hidden">
       <h1>Clientes registrados</h1>
       <ul id="clients-list" class="item-list"></ul>
     </section>
 
-    <!-- SECCIÓN: AJUSTES -->
     <section id="ajustes" class="hidden">
       <h1>Configuración del Negocio</h1>
       <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
@@ -290,163 +290,17 @@
     </section>
   </div>
 
-  <!-- Firebase Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      onSnapshot,
-      addDoc,
-      getDocs,
-      updateDoc,
-      deleteDoc,
-      doc
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
-      authDomain: "spaspa-30bad.firebaseapp.com",
-      projectId: "spaspa-30bad",
-      storageBucket: "spaspa-30bad.firebasestorage.app",
-      messagingSenderId: "262101316591",
-      appId: "1:262101316591:web:5c250165b10ef314373c1a",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    let allReservations = [];
-    let currentFilter = "all";
-
-    // === MENU Y SECCIONES ===
-    window.toggleMenu = () => {
+  <script>
+    function toggleMenu() {
       document.getElementById("sidebar").classList.toggle("open");
-    };
+    }
 
-    window.showSection = (id) => {
+    function showSection(id) {
       document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
       document.getElementById("menu-" + id).classList.add("active");
-    };
-
-    // === RESERVAS EN TIEMPO REAL ===
-    function listenReservations() {
-      const q = collection(db, "reservations");
-      onSnapshot(q, (snapshot) => {
-        allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
-        renderReservations();
-      });
     }
-
-    function renderReservations() {
-      const container = document.getElementById("reservations-container");
-      container.innerHTML = "";
-      const filtered = currentFilter === "all"
-        ? allReservations
-        : allReservations.filter(r => r.status === currentFilter);
-
-      if (filtered.length === 0) {
-        container.innerHTML = "<p>No hay reservas para mostrar.</p>";
-        return;
-      }
-
-      filtered.forEach(data => {
-        const card = document.createElement("div");
-        card.classList.add("reservation-card");
-        card.innerHTML = `
-          <div class="reservation-info">
-            <p class="name">${data.full_name}</p>
-            <p><strong>Teléfono:</strong> ${data.phone}</p>
-            <p><strong>Servicio:</strong> ${data.massage_type}</p>
-            <p><strong>Fecha:</strong> ${data.date}</p>
-            <p><strong>Hora:</strong> ${data.time}</p>
-            <p><strong>Estado:</strong> ${data.status}</p>
-          </div>
-          <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
-          <button class="postpone-button" onclick="postponeReservation('${data.id}')">Aplazar</button>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    window.setFilter = (filter, btn) => {
-      currentFilter = filter;
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderReservations();
-    };
-
-    window.updateStatus = async (id, status) => {
-      const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
-      await updateDoc(doc(db, "reservations", id), { status: newStatus });
-    };
-
-    window.postponeReservation = async (id) => {
-      await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
-    };
-
-    // === SERVICIOS ===
-    async function loadServices() {
-      const list = document.getElementById("service-list");
-      list.innerHTML = "";
-      const snapshot = await getDocs(collection(db, "services"));
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const li = document.createElement("li");
-        li.textContent = `${data.name} - €${data.price}`;
-        list.appendChild(li);
-      });
-    }
-
-    window.addService = async () => {
-      const name = document.getElementById("service-name").value;
-      const price = document.getElementById("service-price").value;
-      if (!name || !price) return alert("Completa todos los campos.");
-      await addDoc(collection(db, "services"), { name, price });
-      document.getElementById("service-name").value = "";
-      document.getElementById("service-price").value = "";
-      loadServices();
-    };
-
-    // === CLIENTES ===
-    async function loadClients() {
-      const list = document.getElementById("clients-list");
-      list.innerHTML = "";
-      const snapshot = await getDocs(collection(db, "reservations"));
-      const clientes = {};
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        if (!clientes[d.email]) clientes[d.email] = d.full_name;
-      });
-      Object.entries(clientes).forEach(([email, name]) => {
-        const li = document.createElement("li");
-        li.textContent = `${name} (${email})`;
-        list.appendChild(li);
-      });
-    }
-
-    // === AJUSTES ===
-    window.saveSettings = () => {
-      const dir = document.getElementById("config-direccion").value;
-      const hor = document.getElementById("config-horario").value;
-      localStorage.setItem("spa_config", JSON.stringify({ dir, hor }));
-      alert("✅ Ajustes guardados correctamente");
-    };
-
-    window.clearData = async () => {
-      if (!confirm("¿Seguro que deseas eliminar todas las reservas y servicios?")) return;
-      const reservasSnap = await getDocs(collection(db, "reservations"));
-      reservasSnap.forEach(docSnap => deleteDoc(doc(db, "reservations", docSnap.id)));
-      const serviciosSnap = await getDocs(collection(db, "services"));
-      serviciosSnap.forEach(docSnap => deleteDoc(doc(db, "services", docSnap.id)));
-      alert("🗑️ Base de datos limpiada.");
-    };
-
-    document.addEventListener("DOMContentLoaded", () => {
-      listenReservations();
-    });
   </script>
 </body>
 </html>
