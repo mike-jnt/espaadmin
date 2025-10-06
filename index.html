@@ -134,21 +134,6 @@
     .postpone-button { background-color: #f0ad4e; }
     .status-button:hover { background-color: #45a049; }
     .postpone-button:hover { background-color: #e69500; }
-
-    /* Botón actualizar */
-    .refresh-btn {
-      padding: 10px 20px;
-      background: #4CAF50;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    .refresh-btn:hover {
-      background: #45a049;
-    }
   </style>
 </head>
 
@@ -166,7 +151,7 @@
   <div class="main-content" id="main-content">
     <div class="header">
       <h1>Reservas registradas</h1>
-      <button class="refresh-btn" onclick="loadReservations()">Actualizar 🔄</button>
+      <p style="font-size:14px; color:#666;">(Actualización automática en tiempo real ⚡)</p>
     </div>
 
     <div id="reservations-container" class="reservations-container">
@@ -180,12 +165,12 @@
     import {
       getFirestore,
       collection,
-      getDocs,
+      onSnapshot,
       updateDoc,
       doc
     } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-    // Configuración Firebase (idéntica a index.html)
+    // 🔥 Configuración Firebase (misma que index.html)
     const firebaseConfig = {
       apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
       authDomain: "spaspa-30bad.firebaseapp.com",
@@ -198,30 +183,23 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Cargar reservas desde Firestore
-    async function loadReservations() {
+    // 🔁 Escucha en tiempo real los cambios en la colección "reservations"
+    function listenReservations() {
       const container = document.getElementById("reservations-container");
-      if (!container) {
-        console.error("❌ No se encontró el contenedor de reservas en el DOM.");
-        return;
-      }
+      container.innerHTML = "<p>Escuchando cambios en la base de datos...</p>";
 
-      container.innerHTML = "<p>Cargando reservas...</p>";
+      const q = collection(db, "reservations");
 
-      try {
-        const querySnapshot = await getDocs(collection(db, "reservations"));
-        console.log("📦 Reservas encontradas:", querySnapshot.size);
-
+      onSnapshot(q, (snapshot) => {
         container.innerHTML = "";
 
-        if (querySnapshot.empty) {
-          container.innerHTML = "<p>No hay reservas registradas en la base de datos.</p>";
+        if (snapshot.empty) {
+          container.innerHTML = "<p>No hay reservas registradas.</p>";
           return;
         }
 
-        querySnapshot.forEach((docSnap) => {
+        snapshot.forEach((docSnap) => {
           const data = docSnap.data();
-          console.log("🧾 Reserva:", data);
 
           const card = document.createElement("div");
           card.classList.add("reservation-card");
@@ -243,19 +221,18 @@
 
           container.appendChild(card);
         });
-      } catch (error) {
-        console.error("❌ Error al leer Firestore:", error);
-        container.innerHTML = `<p>Error al cargar las reservas: ${error.message}</p>`;
-      }
+      }, (error) => {
+        console.error("❌ Error escuchando Firestore:", error);
+        container.innerHTML = `<p>Error al conectar con la base de datos: ${error.message}</p>`;
+      });
     }
 
-    // Cambiar estado Pendiente/Atendido
+    // Cambiar estado entre Pendiente / Atendido
     window.updateStatus = async function (id, currentStatus) {
       const newStatus = currentStatus === "Pendiente" ? "Atendido" : "Pendiente";
       try {
         await updateDoc(doc(db, "reservations", id), { status: newStatus });
-        alert(`Estado actualizado a: ${newStatus}`);
-        loadReservations();
+        console.log(`✅ Estado actualizado a: ${newStatus}`);
       } catch (error) {
         console.error("Error al actualizar estado:", error);
       }
@@ -265,17 +242,16 @@
     window.postponeReservation = async function (id) {
       try {
         await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
-        alert("Reserva aplazada correctamente.");
-        loadReservations();
+        console.log("📅 Reserva aplazada correctamente.");
       } catch (error) {
         console.error("Error al aplazar reserva:", error);
       }
     };
 
-    // Cargar reservas solo cuando el DOM esté listo
-    document.addEventListener("DOMContentLoaded", loadReservations);
+    // Cargar automáticamente al abrir
+    document.addEventListener("DOMContentLoaded", listenReservations);
 
-    // Evitar errores de funciones que aún no están implementadas
+    // Evitar errores por secciones no implementadas aún
     window.showReservations = () => console.log("Sección Reservas aún no implementada");
     window.showServices = () => console.log("Sección Servicios aún no implementada");
     window.showClients = () => console.log("Sección Clientes aún no implementada");
