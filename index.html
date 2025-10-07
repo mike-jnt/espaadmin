@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Reservas - SPA Puerto Rico Mogán</title>
+  <title>Panel de Administración - SPA Puerto Rico Mogán</title>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f4f6f9;
@@ -17,7 +16,7 @@
       overflow: hidden;
     }
 
-    /* Barra lateral */
+    /* Sidebar */
     .sidebar {
       width: 250px;
       background-color: #2F4F4F;
@@ -55,11 +54,12 @@
       transition: background-color 0.3s;
     }
 
+    .sidebar ul li.active,
     .sidebar ul li:hover {
       background-color: #4CAF50;
     }
 
-    /* Contenido principal */
+    /* Main Content */
     .main-content {
       margin-left: 250px;
       padding: 30px;
@@ -70,28 +70,40 @@
       width: calc(100% - 250px);
       height: 100vh;
       overflow-y: auto;
+      transition: all 0.3s ease;
     }
 
-    .header {
+    h1 { margin-bottom: 20px; }
+
+    .filters {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 15px;
+      gap: 10px;
+      margin-bottom: 25px;
     }
 
-    .header h1 {
-      font-size: 26px;
-      color: #2F4F4F;
+    .filter-btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-size: 14px;
+      transition: all 0.3s;
     }
 
+    .filter-btn:hover { transform: scale(1.05); }
+    .all { background-color: #555; }
+    .pending { background-color: #f0ad4e; }
+    .attended { background-color: #4CAF50; }
+    .postponed { background-color: #5bc0de; }
+    .filter-btn.active { outline: 3px solid #222; }
+
+    /* Reservations grid */
     .reservations-container {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       justify-content: flex-start;
-      padding-bottom: 50px;
     }
 
     .reservation-card {
@@ -100,25 +112,10 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease-in-out;
-      flex-direction: column;
+      transition: transform 0.2s;
     }
 
-    .reservation-card:hover {
-      transform: scale(1.02);
-    }
-
-    .reservation-info p {
-      margin: 6px 0;
-      font-size: 14px;
-    }
-
-    .reservation-info .name {
-      font-size: 17px;
-      font-weight: bold;
-      color: #2F4F4F;
-    }
-
+    .reservation-card:hover { transform: scale(1.02); }
     .status-button, .postpone-button {
       padding: 10px;
       border: none;
@@ -132,8 +129,41 @@
 
     .status-button { background-color: #4CAF50; }
     .postpone-button { background-color: #f0ad4e; }
-    .status-button:hover { background-color: #45a049; }
-    .postpone-button:hover { background-color: #e69500; }
+
+    /* Other sections */
+    .hidden { display: none; }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button.add-btn {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button.add-btn:hover { background-color: #45a049; }
+
+    ul.item-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    ul.item-list li {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 
@@ -141,22 +171,54 @@
   <div class="sidebar">
     <h2>SPA Admin</h2>
     <ul>
-      <li onclick="showReservations()">Reservas</li>
-      <li onclick="showServices()">Servicios</li>
-      <li onclick="showClients()">Clientes</li>
-      <li onclick="showSettings()">Ajustes</li>
+      <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
+      <li id="menu-servicios" onclick="showSection('servicios')">Servicios</li>
+      <li id="menu-clientes" onclick="showSection('clientes')">Clientes</li>
+      <li id="menu-ajustes" onclick="showSection('ajustes')">Ajustes</li>
     </ul>
   </div>
 
-  <div class="main-content" id="main-content">
-    <div class="header">
+  <div class="main-content">
+    <!-- RESERVAS -->
+    <section id="reservas">
       <h1>Reservas registradas</h1>
-      <p style="font-size:14px; color:#666;">(Actualización automática en tiempo real ⚡)</p>
-    </div>
+      <p style="font-size:14px; color:#666;">(Actualización en tiempo real ⚡)</p>
 
-    <div id="reservations-container" class="reservations-container">
-      <p>Cargando reservas...</p>
-    </div>
+      <div class="filters">
+        <button class="filter-btn all active" onclick="setFilter('all', this)">Todas</button>
+        <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
+        <button class="filter-btn attended" onclick="setFilter('Atendido', this)">Atendidas</button>
+        <button class="filter-btn postponed" onclick="setFilter('Aplazado', this)">Aplazadas</button>
+      </div>
+
+      <div id="reservations-container" class="reservations-container">
+        <p>Cargando reservas...</p>
+      </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios" class="hidden">
+      <h1>Gestión de Servicios</h1>
+      <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
+      <input type="number" id="service-price" class="input-field" placeholder="Precio (€)" />
+      <button class="add-btn" onclick="addService()">Agregar servicio</button>
+      <ul id="service-list" class="item-list"></ul>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="clientes" class="hidden">
+      <h1>Clientes registrados</h1>
+      <ul id="clients-list" class="item-list"></ul>
+    </section>
+
+    <!-- AJUSTES -->
+    <section id="ajustes" class="hidden">
+      <h1>Configuración del Negocio</h1>
+      <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
+      <input id="config-horario" class="input-field" placeholder="Horario de atención" />
+      <button class="add-btn" onclick="saveSettings()">Guardar ajustes</button>
+      <button class="add-btn" style="background:#d9534f" onclick="clearData()">Limpiar base de datos</button>
+    </section>
   </div>
 
   <!-- Firebase Script -->
@@ -166,11 +228,13 @@
       getFirestore,
       collection,
       onSnapshot,
+      addDoc,
+      getDocs,
       updateDoc,
+      deleteDoc,
       doc
     } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-    // 🔥 Configuración Firebase (misma que index.html)
     const firebaseConfig = {
       apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
       authDomain: "spaspa-30bad.firebaseapp.com",
@@ -183,80 +247,137 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 🔁 Escucha en tiempo real los cambios en la colección "reservations"
+    let allReservations = [];
+    let currentFilter = "all";
+
+    // ========== NAVEGACIÓN ENTRE SECCIONES ==========
+    window.showSection = (id) => {
+      document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
+      document.getElementById("menu-" + id).classList.add("active");
+
+      if (id === "servicios") loadServices();
+      if (id === "clientes") loadClients();
+    };
+
+    // ========== RESERVAS EN TIEMPO REAL ==========
     function listenReservations() {
-      const container = document.getElementById("reservations-container");
-      container.innerHTML = "<p>Escuchando cambios en la base de datos...</p>";
-
       const q = collection(db, "reservations");
-
       onSnapshot(q, (snapshot) => {
-        container.innerHTML = "";
-
-        if (snapshot.empty) {
-          container.innerHTML = "<p>No hay reservas registradas.</p>";
-          return;
-        }
-
-        snapshot.forEach((docSnap) => {
-          const data = docSnap.data();
-
-          const card = document.createElement("div");
-          card.classList.add("reservation-card");
-
-          card.innerHTML = `
-            <div class="reservation-info">
-              <p class="name">${data.full_name || "(Sin nombre)"}</p>
-              <p><strong>Teléfono:</strong> ${data.phone || "—"}</p>
-              <p><strong>Correo:</strong> ${data.email || "—"}</p>
-              <p><strong>Servicio:</strong> ${data.massage_type || "—"}</p>
-              <p><strong>Fecha:</strong> ${data.date || "—"}</p>
-              <p><strong>Hora:</strong> ${data.time || "—"}</p>
-              <p><strong>Estado:</strong> ${data.status || "Pendiente"}</p>
-              <p><strong>Código:</strong> ${data.reservation_code || "N/A"}</p>
-            </div>
-            <button class="status-button" onclick="updateStatus('${docSnap.id}', '${data.status}')">Cambiar estado</button>
-            <button class="postpone-button" onclick="postponeReservation('${docSnap.id}')">Aplazar</button>
-          `;
-
-          container.appendChild(card);
-        });
-      }, (error) => {
-        console.error("❌ Error escuchando Firestore:", error);
-        container.innerHTML = `<p>Error al conectar con la base de datos: ${error.message}</p>`;
+        allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+        renderReservations();
       });
     }
 
-    // Cambiar estado entre Pendiente / Atendido
-    window.updateStatus = async function (id, currentStatus) {
-      const newStatus = currentStatus === "Pendiente" ? "Atendido" : "Pendiente";
-      try {
-        await updateDoc(doc(db, "reservations", id), { status: newStatus });
-        console.log(`✅ Estado actualizado a: ${newStatus}`);
-      } catch (error) {
-        console.error("Error al actualizar estado:", error);
+    function renderReservations() {
+      const container = document.getElementById("reservations-container");
+      let filtered = currentFilter === "all"
+        ? allReservations
+        : allReservations.filter(r => r.status === currentFilter);
+      container.innerHTML = "";
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>No hay reservas para mostrar.</p>";
+        return;
       }
+
+      filtered.forEach((data) => {
+        const card = document.createElement("div");
+        card.classList.add("reservation-card");
+        card.innerHTML = `
+          <div class="reservation-info">
+            <p class="name">${data.full_name}</p>
+            <p><strong>Teléfono:</strong> ${data.phone}</p>
+            <p><strong>Correo:</strong> ${data.email}</p>
+            <p><strong>Servicio:</strong> ${data.massage_type}</p>
+            <p><strong>Fecha:</strong> ${data.date}</p>
+            <p><strong>Hora:</strong> ${data.time}</p>
+            <p><strong>Estado:</strong> ${data.status}</p>
+          </div>
+          <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
+          <button class="postpone-button" onclick="postponeReservation('${data.id}')">Aplazar</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.setFilter = (filter, btn) => {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderReservations();
     };
 
-    // Aplazar reserva
-    window.postponeReservation = async function (id) {
-      try {
-        await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
-        console.log("📅 Reserva aplazada correctamente.");
-      } catch (error) {
-        console.error("Error al aplazar reserva:", error);
-      }
+    window.updateStatus = async (id, status) => {
+      const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
+      await updateDoc(doc(db, "reservations", id), { status: newStatus });
     };
 
-    // Cargar automáticamente al abrir
+    window.postponeReservation = async (id) => {
+      await updateDoc(doc(db, "reservations", id), { status: "Aplazado" });
+    };
+
+    // ========== SERVICIOS ==========
+    async function loadServices() {
+      const list = document.getElementById("service-list");
+      list.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "services"));
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.name} - €${data.price}`;
+        list.appendChild(li);
+      });
+    }
+
+    window.addService = async () => {
+      const name = document.getElementById("service-name").value;
+      const price = document.getElementById("service-price").value;
+      if (!name || !price) return alert("Completa todos los campos.");
+      await addDoc(collection(db, "services"), { name, price });
+      document.getElementById("service-name").value = "";
+      document.getElementById("service-price").value = "";
+      loadServices();
+    };
+
+    // ========== CLIENTES ==========
+    async function loadClients() {
+      const list = document.getElementById("clients-list");
+      list.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "reservations"));
+      const clientesUnicos = {};
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        if (!clientesUnicos[d.email]) {
+          clientesUnicos[d.email] = d.full_name;
+        }
+      });
+      Object.entries(clientesUnicos).forEach(([email, name]) => {
+        const li = document.createElement("li");
+        li.textContent = `${name} (${email})`;
+        list.appendChild(li);
+      });
+    }
+
+    // ========== AJUSTES ==========
+    window.saveSettings = () => {
+      const dir = document.getElementById("config-direccion").value;
+      const hor = document.getElementById("config-horario").value;
+      localStorage.setItem("spa_config", JSON.stringify({ dir, hor }));
+      alert("✅ Ajustes guardados correctamente");
+    };
+
+    window.clearData = async () => {
+      if (!confirm("¿Seguro que deseas eliminar todas las reservas y servicios?")) return;
+      const reservasSnap = await getDocs(collection(db, "reservations"));
+      reservasSnap.forEach((docSnap) => deleteDoc(doc(db, "reservations", docSnap.id)));
+      const serviciosSnap = await getDocs(collection(db, "services"));
+      serviciosSnap.forEach((docSnap) => deleteDoc(doc(db, "services", docSnap.id)));
+      alert("🗑️ Base de datos limpiada.");
+    };
+
     document.addEventListener("DOMContentLoaded", listenReservations);
-
-    // Evitar errores por secciones no implementadas aún
-    window.showReservations = () => console.log("Sección Reservas aún no implementada");
-    window.showServices = () => console.log("Sección Servicios aún no implementada");
-    window.showClients = () => console.log("Sección Clientes aún no implementada");
-    window.showSettings = () => console.log("Sección Ajustes aún no implementada");
-    window.filterReservations = (status) => console.log("Filtro no implementado:", status);
   </script>
 </body>
 </html>
