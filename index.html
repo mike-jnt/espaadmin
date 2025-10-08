@@ -166,7 +166,7 @@
     }
   </style>
 
-  <style>
+<style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Poppins', sans-serif;
@@ -276,9 +276,16 @@
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    overflow: hidden;
+    word-wrap: break-word;
+    max-height: 100%;  /* Adjusts height dynamically based on content */
+    display: flex;
+    flex-direction: column;
   }
 
   .reservation-card:hover { transform: scale(1.02); }
+
+  /* Adjust buttons */
   .status-button, .postpone-button {
     padding: 10px;
     border: none;
@@ -293,7 +300,7 @@
   .status-button { background-color: #4CAF50; }
   .postpone-button { background-color: #f0ad4e; }
 
-  /* Other sections */
+  /* --- Other sections --- */
   .hidden { display: none; }
   .input-field {
     width: 100%;
@@ -364,7 +371,7 @@
       padding-top: 70px;
     }
 
-    /* Ajustar el título de "Reservas" */
+    /* Adjust the title of "Reservas" */
     h1 {
       font-size: 1.5rem;
     }
@@ -380,7 +387,7 @@
       padding: 12px;
     }
 
-    /* Adaptar el contenido en móviles */
+    /* Adapt the content in mobile */
     .reservations-container {
       padding: 10px;
     }
@@ -393,6 +400,8 @@
       padding: 15px;
       margin-bottom: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      height: auto; /* Allow cards to grow based on content */
+      text-align: center;
     }
 
     label {
@@ -423,6 +432,8 @@
   }
 
 </style>
+
+
 
 </head>
 
