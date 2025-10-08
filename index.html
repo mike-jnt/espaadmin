@@ -316,6 +316,25 @@
       });
     }
 
+      // ========== CLIENTES ==========
+  async function loadClients() {
+    const list = document.getElementById("clients-list");
+    list.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "reservations"));
+    const clientesUnicos = {};
+    snapshot.forEach((docSnap) => {
+      const d = docSnap.data();
+      if (!clientesUnicos[d.email]) {
+        clientesUnicos[d.email] = d.full_name;
+      }
+    });
+    Object.entries(clientesUnicos).forEach(([email, name]) => {
+      const li = document.createElement("li");
+      li.textContent = `${name} (${email})`;
+      list.appendChild(li);
+    });
+  }
+
     // Filtro de estado (Pendiente, Atendido, Aplazado)
     window.setFilter = (filter, btn) => {
       currentFilter = filter;
@@ -342,3 +361,4 @@
 
 </body>
 </html>
+
