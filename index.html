@@ -224,236 +224,150 @@
   </div>
 
   <!-- Firebase Script -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    onSnapshot,
-    addDoc,
-    getDocs,
-    updateDoc,
-    deleteDoc,
-    doc,
-    query,
-    where
-  } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      onSnapshot,
+      addDoc,
+      getDocs,
+      updateDoc,
+      deleteDoc,
+      doc,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
-  // Configuración de Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
-    authDomain: "spaspa-30bad.firebaseapp.com",
-    projectId: "spaspa-30bad",
-    storageBucket: "spaspa-30bad.firebasestorage.app",
-    messagingSenderId: "262101316591",
-    appId: "1:262101316591:web:5c250165b10ef314373c1a",
-  };
+    // ✅ Configuración Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpCWpQfKSJwSvAyIL421LQHPDRE1PfY8k",
+      authDomain: "spaspa-30bad.firebaseapp.com",
+      projectId: "spaspa-30bad",
+      storageBucket: "spaspa-30bad.firebasestorage.app",
+      messagingSenderId: "262101316591",
+      appId: "1:262101316591:web:5c250165b10ef314373c1a",
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  let allReservations = [];
-  let currentFilter = "Pendiente";  // Mostrar siempre las reservas Pendientes por defecto
-  let currentEditId = null;
+    let allReservations = [];
+    let currentFilter = "all";
+    let currentEditId = null;
 
-  // ======= NAVEGACIÓN ENTRE SECCIONES =======
-  window.showSection = (id) => {
-    document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
-    document.getElementById(id).classList.remove("hidden");
-    document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
-    document.getElementById("menu-" + id).classList.add("active");
+    // ========== NAVEGACIÓN ENTRE SECCIONES ==========
+    window.showSection = (id) => {
+      document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
+      document.getElementById("menu-" + id).classList.add("active");
 
-    if (id === "servicios") loadServices();
-    if (id === "clientes") loadClients();
-  };
+      if (id === "servicios") loadServices();
+      if (id === "clientes") loadClients();
+    };
 
-  // ======= RESERVAS EN TIEMPO REAL =======
-  function listenReservations() {
-    const reservationsRef = collection(db, "reservations");
+    // ========== RESERVAS EN TIEMPO REAL ==========
+    function listenReservations() {
+      const reservationsRef = collection(db, "reservations");
 
-    // Filtrado solo para "Pendiente"
-    const q = query(reservationsRef, where("status", "==", "Pendiente"));
+      const q = currentFilter === "all"
+        ? reservationsRef
+        : query(reservationsRef, where("status", "==", currentFilter));
 
-    onSnapshot(q, (snapshot) => {
-      allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
-      renderReservations();
-    });
-  }
-
-  function renderReservations() {
-    const container = document.getElementById("reservations-container");
-    container.innerHTML = "";
-
-    if (allReservations.length === 0) {
-      container.innerHTML = "<p>No hay reservas pendientes para mostrar.</p>";
-      return;
+      onSnapshot(q, (snapshot) => {
+        allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+        renderReservations();
+      });
     }
 
-    allReservations.forEach((data) => {
-      const card = document.createElement("div");
-      card.classList.add("reservation-card");
-      card.innerHTML = `
-        <div class="reservation-info">
-          <p><strong>Nombre:</strong> ${data.full_name}</p>
-          <p><strong>Teléfono:</strong> ${data.phone}</p>
-          <p><strong>Correo:</strong> ${data.email}</p>
-          <p><strong>Servicio:</strong> ${data.massage_type}</p>
-          <p><strong>Fecha:</strong> ${data.date}</p>
-          <p><strong>Hora:</strong> ${data.time}</p>
-          <p><strong>Dirección:</strong> ${data.address}</p>
-          <p><strong>Comentarios:</strong> ${data.comments || "No hay comentarios"}</p>
-          <p><strong>Código de Reserva:</strong> ${data.reservation_code}</p>
-          <p><strong>Estado:</strong> ${data.status}</p>
-        </div>
-        <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
-        <button class="postpone-button" onclick="openReschedulePopup('${data.id}')">Aplazar</button>
-      `;
-      container.appendChild(card);
-    });
-  }
+    function renderReservations() {
+      const container = document.getElementById("reservations-container");
+      container.innerHTML = "";
 
-  // ======= Filtros de reserva =======
-  window.setFilter = (filter, btn) => {
-    currentFilter = filter;
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    renderReservations();
-  };
+      const filtered = currentFilter === "all"
+        ? allReservations
+        : allReservations.filter(r => r.status === currentFilter);
 
-  // ======= Cambiar estado de la reserva =======
-  window.updateStatus = async (id, status) => {
-    const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
-    await updateDoc(doc(db, "reservations", id), { status: newStatus });
-  };
-
-  // ======= POPUP DE REAGENDAMIENTO =======
-  function createReschedulePopup() {
-    const modal = document.createElement("div");
-    modal.id = "reschedule-modal";
-    Object.assign(modal.style, {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(0,0,0,0.5)",
-      display: "none",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: "999",
-    });
-
-    modal.innerHTML = `
-      <div style="background:white; padding:30px; border-radius:12px; width:90%; max-width:400px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-        <h3 style="margin-bottom:15px;">Reagendar cita</h3>
-        <label for="new-date" style="display:block; text-align:left;">Nueva fecha:</label>
-        <input type="date" id="new-date" style="margin:10px 0; padding:10px; width:100%; border-radius:8px; border:1px solid #ccc;">
-        <label for="new-time" style="display:block; text-align:left;">Nueva hora:</label>
-        <input type="time" id="new-time" style="margin:10px 0; padding:10px; width:100%; border-radius:8px; border:1px solid #ccc;">
-        <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
-          <button id="save-reschedule" style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Guardar</button>
-          <button id="cancel-reschedule" style="background:#d9534f; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Cancelar</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  createReschedulePopup();
-
-  window.openReschedulePopup = (id) => {
-    currentEditId = id;
-    document.getElementById("reschedule-modal").style.display = "flex";
-  };
-
-  document.body.addEventListener("click", async (e) => {
-    if (e.target.id === "cancel-reschedule") {
-      document.getElementById("reschedule-modal").style.display = "none";
-      currentEditId = null;
-    }
-
-    if (e.target.id === "save-reschedule") {
-      const newDate = document.getElementById("new-date").value;
-      const newTime = document.getElementById("new-time").value;
-
-      if (!newDate || !newTime) {
-        alert("⚠️ Debes seleccionar una fecha y hora válidas para reagendar.");
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>No hay reservas para mostrar.</p>";
         return;
       }
 
-      await updateDoc(doc(db, "reservations", currentEditId), {
-        status: "Aplazado",
-        date: newDate,
-        time: newTime
+      filtered.forEach((data) => {
+        const card = document.createElement("div");
+        card.classList.add("reservation-card");
+        card.innerHTML = `
+          <div class="reservation-info">
+            <p><strong>Nombre:</strong> ${data.full_name}</p>
+            <p><strong>Teléfono:</strong> ${data.phone}</p>
+            <p><strong>Correo:</strong> ${data.email}</p>
+            <p><strong>Servicio:</strong> ${data.massage_type}</p>
+            <p><strong>Fecha:</strong> ${data.date}</p>
+            <p><strong>Hora:</strong> ${data.time}</p>
+            <p><strong>Dirección:</strong> ${data.address}</p>
+            <p><strong>Comentarios:</strong> ${data.comments || "No hay comentarios"}</p>
+            <p><strong>Código de Reserva:</strong> ${data.reservation_code}</p>
+            <p><strong>Estado:</strong> ${data.status}</p>
+          </div>
+          <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
+          <button class="postpone-button" onclick="openReschedulePopup('${data.id}')">Aplazar</button>
+        `;
+        container.appendChild(card);
       });
-
-      alert(`✅ Cita reagendada para el ${newDate} a las ${newTime}.`);
-      document.getElementById("reschedule-modal").style.display = "none";
-      currentEditId = null;
     }
-  });
 
-  // ======= SERVICIOS =======
-  async function loadServices() {
-    const list = document.getElementById("service-list");
-    list.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "services"));
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      const li = document.createElement("li");
-      li.textContent = `${data.name} - €${data.price}`;
-      list.appendChild(li);
-    });
-  }
-
-  window.addService = async () => {
-    const name = document.getElementById("service-name").value;
-    const price = document.getElementById("service-price").value;
-    if (!name || !price) return alert("Completa todos los campos.");
-    await addDoc(collection(db, "services"), { name, price });
-    document.getElementById("service-name").value = "";
-    document.getElementById("service-price").value = "";
-    loadServices();
-  };
-
-  // ======= CLIENTES =======
+      // ========== CLIENTES ==========
   async function loadClients() {
     const list = document.getElementById("clients-list");
     list.innerHTML = "";
     const snapshot = await getDocs(collection(db, "reservations"));
-    const uniqueClients = {};
+    const clientesUnicos = {};
     snapshot.forEach((docSnap) => {
       const d = docSnap.data();
-      if (!uniqueClients[d.email]) {
-        uniqueClients[d.email] = d.full_name;
+      if (!clientesUnicos[d.email]) {
+        clientesUnicos[d.email] = d.full_name;
       }
     });
-    Object.entries(uniqueClients).forEach(([email, name]) => {
+    Object.entries(clientesUnicos).forEach(([email, name]) => {
       const li = document.createElement("li");
       li.textContent = `${name} (${email})`;
       list.appendChild(li);
     });
   }
 
-  // ======= AJUSTES =======
-  window.saveSettings = () => {
-    const dir = document.getElementById("config-direccion").value;
-    const hor = document.getElementById("config-horario").value;
-    localStorage.setItem("spa_config", JSON.stringify({ dir, hor }));
-    alert("✅ Ajustes guardados correctamente");
-  };
+    // Filtro de estado (Pendiente, Atendido, Aplazado)
+    window.setFilter = (filter, btn) => {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderReservations();
+    };
 
-  window.clearData = async () => {
-    if (!confirm("¿Seguro que deseas eliminar todas las reservas y servicios?")) return;
-    const reservasSnap = await getDocs(collection(db, "reservations"));
-    reservasSnap.forEach((docSnap) => deleteDoc(doc(db, "reservations", docSnap.id)));
-    const serviciosSnap = await getDocs(collection(db, "services"));
-    serviciosSnap.forEach((docSnap) => deleteDoc(doc(db, "services", docSnap.id)));
-    alert("🗑️ Base de datos limpiada.");
-  };
+    // Función para cambiar el estado de una reserva
+    window.updateStatus = async (id, status) => {
+      const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
+      await updateDoc(doc(db, "reservations", id), { status: newStatus });
+    };
 
-  // Al cargar la página comenzamos a escuchar las reservas.
-  document.addEventListener("DOMContentLoaded", listenReservations);
+    // Función para reagendar la reserva
+    window.openReschedulePopup = (id) => {
+      currentEditId = id;
+      document.getElementById("reschedule-modal").style.display = "flex";
+    };
+
+    // Cuando se cargue la página, comenzamos a escuchar las reservas
+    document.addEventListener("DOMContentLoaded", listenReservations);
+  </script>
+
+  <script>
+  // Menú hamburguesa
+  const hamburgerMenu = document.getElementById("hamburger-menu");
+  const sidebar = document.getElementById("sidebar");
+
+  hamburgerMenu.addEventListener("click", () => {
+    sidebar.classList.toggle("open");
+  });
 </script>
 
 </body>
@@ -462,4 +376,5 @@
 
 </body>
 </html>
+
 
