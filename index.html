@@ -115,9 +115,14 @@
       transition: transform 0.2s;
       overflow: hidden;
       word-wrap: break-word;
+      max-height: 100%;  /* Adjusts height dynamically based on content */
+      display: flex;
+      flex-direction: column;
     }
 
     .reservation-card:hover { transform: scale(1.02); }
+
+    /* Adjust buttons */
     .status-button, .postpone-button {
       padding: 10px;
       border: none;
@@ -166,12 +171,114 @@
       border-radius: 8px;
       margin-bottom: 5px;
     }
-  </style>
 
+    /* --- HAMBURGER MENU --- */
+    #hamburger-menu {
+      display: none;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 30px;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 110;
+      cursor: pointer;
+    }
+
+    /* --- HAMBURGER MENU VISIBLE --- */
+    @media (max-width: 768px) {
+      #hamburger-menu {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-250px);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 70px;
+      }
+
+      /* Adjust the title of "Reservas" */
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .filters {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .filter-btn {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+
+      /* Adapt the content in mobile */
+      .reservations-container {
+        padding: 10px;
+      }
+
+      .reservation-card {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: auto; /* Allow cards to grow based on content */
+        text-align: center;
+      }
+
+      label {
+        font-size: 0.9rem;
+      }
+
+      input,
+      select,
+      textarea {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 12px;
+      }
+    }
+
+    /* --- IMAGE CONTAINER --- */
+    .image-container {
+      flex: 1;
+      background-image: url("reserva.jpg");
+      background-size: cover;
+      background-position: center;
+      min-height: 400px;
+      border-radius: 0 0 12px 12px;
+    }
+
+  </style>
 </head>
 
 <body>
-  <div class="sidebar">
+  <!-- Botón menú hamburguesa (solo visible en móviles y tablets) -->
+  <button id="hamburger-menu" class="hamburger-menu">
+    &#9776; <!-- Símbolo de hamburguesa -->
+  </button>
+
+  <!-- Sidebar - Menú de navegación -->
+  <div class="sidebar" id="sidebar">
     <h2>SPA Admin</h2>
     <ul>
       <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
@@ -185,7 +292,7 @@
     <!-- RESERVAS -->
     <section id="reservas">
       <h1>Reservas registradas</h1>
-      <p style="font-size:14px; color:#666;">(Actualización en tiempo real ⚡)</p>
+      <p style="font-size:14px; color:#666;"></p>
 
       <div class="filters">
         <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
@@ -253,7 +360,7 @@
     const db = getFirestore(app);
 
     let allReservations = [];
-    let currentFilter = "all";
+    let currentFilter = "Pendiente";  // Mostrar siempre las reservas Pendientes por defecto
     let currentEditId = null;
 
     // ========== NAVEGACIÓN ENTRE SECCIONES ==========
@@ -271,9 +378,7 @@
     function listenReservations() {
       const reservationsRef = collection(db, "reservations");
 
-      const q = currentFilter === "all"
-        ? reservationsRef
-        : query(reservationsRef, where("status", "==", currentFilter));
+      const q = query(reservationsRef, where("status", "==", "Pendiente"));
 
       onSnapshot(q, (snapshot) => {
         allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
@@ -285,16 +390,12 @@
       const container = document.getElementById("reservations-container");
       container.innerHTML = "";
 
-      const filtered = currentFilter === "all"
-        ? allReservations
-        : allReservations.filter(r => r.status === currentFilter);
-
-      if (filtered.length === 0) {
-        container.innerHTML = "<p>No hay reservas para mostrar.</p>";
+      if (allReservations.length === 0) {
+        container.innerHTML = "<p>No hay reservas pendientes para mostrar.</p>";
         return;
       }
 
-      filtered.forEach((data) => {
+      allReservations.forEach((data) => {
         const card = document.createElement("div");
         card.classList.add("reservation-card");
         card.innerHTML = `
@@ -317,26 +418,7 @@
       });
     }
 
-      // ========== CLIENTES ==========
-  async function loadClients() {
-    const list = document.getElementById("clients-list");
-    list.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "reservations"));
-    const clientesUnicos = {};
-    snapshot.forEach((docSnap) => {
-      const d = docSnap.data();
-      if (!clientesUnicos[d.email]) {
-        clientesUnicos[d.email] = d.full_name;
-      }
-    });
-    Object.entries(clientesUnicos).forEach(([email, name]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name} (${email})`;
-      list.appendChild(li);
-    });
-  }
-
-    // Filtro de estado (Pendiente, Atendido, Aplazado)
+    // ======= Filtros =======
     window.setFilter = (filter, btn) => {
       currentFilter = filter;
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -344,19 +426,19 @@
       renderReservations();
     };
 
-    // Función para cambiar el estado de una reserva
+    // ======= Cambiar estado de la reserva =======
     window.updateStatus = async (id, status) => {
       const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
       await updateDoc(doc(db, "reservations", id), { status: newStatus });
     };
 
-    // Función para reagendar la reserva
+    // Función de reagendar
     window.openReschedulePopup = (id) => {
       currentEditId = id;
       document.getElementById("reschedule-modal").style.display = "flex";
     };
 
-    // Cuando se cargue la página, comenzamos a escuchar las reservas
+    // Llamamos la función cuando la página carga
     document.addEventListener("DOMContentLoaded", listenReservations);
   </script>
 
@@ -372,9 +454,3 @@
 
 </body>
 </html>
-
-
-</body>
-</html>
-
-
