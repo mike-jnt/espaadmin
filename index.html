@@ -78,7 +78,9 @@
     .filters {
       display: flex;
       gap: 10px;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
     .filter-btn {
@@ -98,6 +100,90 @@
     .postponed { background-color: #5bc0de; }
     .filter-btn.active { outline: 3px solid #222; }
 
+    /* Buscador */
+    .input-search {
+      flex: 1;
+      min-width: 220px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      background-color: #fff;
+    }
+
+    /* SUMMARY CARDS (dashboard) */
+    .summary {
+      margin-bottom: 20px;
+    }
+
+    .summary-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .summary-card {
+      background: #f4f6f9;
+      padding: 12px 16px;
+      border-radius: 10px;
+      min-width: 150px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .summary-card span {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 18px;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    }
+
+    .last-update {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    /* Chart */
+    .chart-container {
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.06);
+      padding:15px;
+      margin-bottom:20px;
+      max-width:720px;
+      height:320px;
+    }
+
+    .chart-container h3 {
+      margin-bottom:4px;
+      font-size:16px;
+      color:#444;
+    }
+
+    .chart-container .top-service-label {
+      font-size:13px;
+      color:#666;
+      margin-bottom:8px;
+    }
+
+    #services-chart {
+      width:100%;
+      height:100%;
+    }
+
     /* Reservations grid */
     .reservations-container {
       display: flex;
@@ -112,12 +198,20 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-left-color 0.2s;
       overflow: hidden;
       word-wrap: break-word;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-left: 4px solid transparent;
     }
 
-    .reservation-card:hover { transform: scale(1.02); }
+    .reservation-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+    }
+
     .status-button, .postpone-button {
       padding: 10px;
       border: none;
@@ -129,8 +223,322 @@
       margin-top: 8px;
     }
 
-    .status-button { background-color: #4CAF50; }
+    .status-attended { background-color: #4CAF50; }
+    .status-not-attended { background-color: #d9534f; }
     .postpone-button { background-color: #f0ad4e; }
+
+    .reservation-alert-label {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ALERTAS VISUALES EN TARJETAS */
+    .card-today {
+      border-left-color: #5bc0de;
+      background-color: #f5fbff;
+    }
+
+    .card-soon {
+      border-left-color: #f0ad4e;
+      background-color: #fff8e6;
+    }
+
+    .card-overdue {
+      border-left-color: #d9534f;
+      background-color: #fff2f2;
+    }
+
+    /* LEYENDA DE ALERTAS */
+    .alerts-legend {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+      color:#666;
+      margin:5px 0 15px 0;
+    }
+
+    .alerts-legend .legend-title {
+      font-weight:600;
+    }
+
+    .legend-item {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#f1f1f1;
+    }
+
+    .legend-dot {
+      width:10px;
+      height:10px;
+      border-radius:50%;
+    }
+
+    .legend-soon .legend-dot { background:#f0ad4e; }
+    .legend-today .legend-dot { background:#5bc0de; }
+    .legend-overdue .legend-dot { background:#d9534f; }
+
+    /* BLOQUE HORARIO DE TRABAJO */
+    .work-schedule {
+      margin-top: 4px;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(15,23,42,0.08);
+      border: 1px solid #e2e8f0;
+    }
+
+    .work-schedule-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .work-schedule-title {
+      font-size: 16px;
+      font-weight: 600;
+      color:#111827;
+    }
+
+    .work-schedule-subtitle {
+      font-size: 12px;
+      color:#6b7280;
+    }
+
+    .work-schedule-grid {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .work-slot {
+      display:grid;
+      grid-template-columns: 110px 1.7fr 1.3fr 1.3fr;
+      gap:8px;
+      align-items:flex-start;
+      padding:6px 8px;
+      border-radius:8px;
+      background:#ffffff;
+      border:1px solid #e5e7eb;
+      font-size:12px;
+    }
+
+    .work-slot-hour {
+      font-weight:600;
+      color:#111827;
+    }
+
+    .work-slot-busy {
+      background:#ecfdf3;
+      border-color:#bbf7d0;
+    }
+
+    .work-slot-free {
+      background:#f9fafb;
+      border-style:dashed;
+      color:#6b7280;
+    }
+
+    .work-slot-label {
+      font-weight:500;
+    }
+
+    .work-slot-conflict {
+      border-color:#d9534f !important;
+      background:#fff2f2 !important;
+    }
+
+    /* FILAS DE RESERVA EN HORARIO (HOY) */
+    .work-res-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:6px;
+      margin-bottom:4px;
+    }
+
+    .work-res-main {
+      flex:1;
+    }
+
+    .work-res-actions {
+      display:flex;
+      gap:4px;
+      flex-wrap:wrap;
+    }
+
+    /* Casilla atendida en HORARIO HOY */
+    .work-res-row-attended {
+      background:#d1fae5;        /* verde muy suave */
+      border-radius:6px;
+      padding:3px 6px;
+    }
+
+    /* Toggle vista día/semana */
+    .work-view-toggle {
+      display:flex;
+      gap:8px;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+
+    .view-toggle-btn {
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid #cbd5f5;
+      background:#e5e7eb;
+      font-size:12px;
+      cursor:pointer;
+    }
+
+    .view-toggle-btn.active {
+      background:#4CAF50;
+      color:#fff;
+      border-color:#4CAF50;
+    }
+
+    /* Horario semanal */
+    .week-schedule-grid {
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap:10px;
+      max-height:360px;
+      overflow-y:auto;
+    }
+
+    .week-day-card {
+      background:#ffffff;
+      border-radius:10px;
+      border:1px solid #e5e7eb;
+      padding:8px 10px;
+      font-size:12px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+
+    /* Colores suaves distintos para cada día de la semana */
+    .week-day-card:nth-child(1) { background:#fefaf5; }  /* Lunes */
+    .week-day-card:nth-child(2) { background:#f5fbff; }  /* Martes */
+    .week-day-card:nth-child(3) { background:#f7fef7; }  /* Miércoles */
+    .week-day-card:nth-child(4) { background:#fbf7ff; }  /* Jueves */
+    .week-day-card:nth-child(5) { background:#f6fbff; }  /* Viernes */
+    .week-day-card:nth-child(6) { background:#fffaf7; }  /* Sábado */
+    .week-day-card:nth-child(7) { background:#f8fffb; }  /* Domingo */
+
+    .week-day-past {
+      opacity: 0.75;
+    }
+
+    .week-day-past .week-day-sub::after {
+      content: " · día pasado";
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .week-day-today {
+      border-color:#4CAF50;
+      box-shadow:0 0 0 1px rgba(76,175,80,0.25);
+    }
+
+    .week-day-header {
+      font-weight:600;
+      color:#111827;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+
+    .week-day-sub {
+      font-size:11px;
+      color:#6b7280;
+      margin-bottom:4px;
+    }
+
+    .week-reservation-item {
+      padding:3px 0;
+      border-bottom:1px dotted #e5e7eb;
+    }
+
+    .week-reservation-item:last-child {
+      border-bottom:none;
+    }
+
+    .week-reservation-time {
+      font-weight:600;
+    }
+
+    .week-no-res {
+      font-size:12px;
+      color:#9ca3af;
+      font-style:italic;
+    }
+
+    .week-no-res-past {
+      color:#9ca3af;
+      font-style:italic;
+    }
+
+    .week-slot-conflict {
+      background:#fff2f2;
+      border-left:3px solid #d9534f;
+      padding-left:6px;
+    }
+
+    /* FILAS DE RESERVA EN HORARIO (SEMANA) */
+    .week-res-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:6px;
+      margin-bottom:2px;
+    }
+
+    .week-res-main {
+      flex:1;
+    }
+
+    .week-res-actions {
+      display:flex;
+      gap:4px;
+      flex-wrap:wrap;
+    }
+
+    /* Casilla atendida en HORARIO SEMANAL */
+    .week-res-row-attended {
+      background:#dcfce7;        /* verde suave */
+      border-radius:4px;
+      padding:2px 4px;
+    }
+
+    /* BOTONES MINI PARA HORARIO */
+    .mini-status-btn {
+      border:none;
+      border-radius:999px;
+      font-size:11px;
+      padding:3px 6px;
+      cursor:pointer;
+      color:#fff;
+      line-height:1.2;
+    }
+
+    .mini-status-attended {
+      background:#4CAF50;
+    }
+
+    .mini-status-not {
+      background:#d9534f;
+    }
 
     /* Other sections */
     .hidden { display: none; }
@@ -140,6 +548,7 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
+      font-size: 14px;
     }
 
     button.add-btn {
@@ -150,6 +559,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
+      font-size: 14px;
     }
 
     button.add-btn:hover { background-color: #45a049; }
@@ -161,308 +571,497 @@
     }
 
     ul.item-list li {
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 5px;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .checkbox-inline {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      margin-bottom:10px;
+    }
+
+    .checkbox-inline input[type="checkbox"] {
+      width:auto;
+    }
+
+    /* --- HAMBURGER MENU --- */
+    #hamburger-menu {
+      display: none;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 30px;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 110;
+      cursor: pointer;
+    }
+
+    /* --- MODAL PARA APLAZAR RESERVA --- */
+    .reschedule-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 120;
+    }
+
+    .reschedule-modal .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h2 {
+      margin-bottom: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* === AJUSTES PROFESIONALES === */
+    .config-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap:18px;
+      margin-top:10px;
+    }
+
+    .config-card {
+      background:#f8fafc;
+      border-radius:12px;
+      padding:16px 18px;
+      box-shadow:0 1px 4px rgba(15,23,42,0.08);
+      border:1px solid #e2e8f0;
+    }
+
+    .config-card h2 {
+      font-size:16px;
+      margin-bottom:6px;
+      color:#111827;
+    }
+
+    .config-card p.config-subtitle {
+      font-size:12px;
+      color:#6b7280;
+      margin-bottom:10px;
+    }
+
+    .inline-input-row {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .inline-input-row .input-field {
+      flex:1;
+      min-width:120px;
+    }
+
+    .config-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .config-label-inline {
+      font-size:13px;
+      color:#374151;
+      margin-bottom:4px;
+    }
+
+    .config-small-note {
+      font-size:11px;
+      color:#6b7280;
+      margin-top:-6px;
+      margin-bottom:8px;
+    }
+
+    /* === CLIENTES PROFESIONAL === */
+    .clients-summary-cards {
+      margin-bottom: 10px;
+    }
+
+    .client-filters-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:10px;
+      align-items:flex-end;
+    }
+
+    .client-filters-row .input-field,
+    .client-filters-row .input-search,
+    .client-filters-row select {
+      margin-bottom:0;
+    }
+
+    .client-filters-row select {
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      background:#fff;
+      font-size:14px;
+      min-width:160px;
+    }
+
+    .client-card {
+      background:#ffffff;
+      border-radius:10px;
+      padding:10px 12px;
+      box-shadow:0 1px 4px rgba(0,0,0,0.08);
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      border:1px solid #e5e7eb;
+    }
+
+    .client-card-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:8px;
+    }
+
+    .client-name {
+      font-weight:600;
+      font-size:14px;
+      color:#111827;
+    }
+
+    .client-email {
+      font-size:12px;
+      color:#6b7280;
+      word-break:break-all;
+    }
+
+    .client-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      justify-content:flex-end;
+    }
+
+    .client-tag {
+      font-size:11px;
+      padding:2px 6px;
+      border-radius:999px;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .client-tag-new {
+      background:#e0f2fe;
+      border-color:#38bdf8;
+      color:#0369a1;
+    }
+
+    .client-tag-freq {
+      background:#ecfdf3;
+      border-color:#4ade80;
+      color:#166534;
+    }
+
+    .client-tag-vip {
+      background:#fef3c7;
+      border-color:#fbbf24;
+      color:#92400e;
+    }
+
+    .client-tag-inactive {
+      background:#f3f4f6;
+      border-color:#9ca3af;
+      color:#4b5563;
+    }
+
+    .client-stats {
+      font-size:12px;
+      color:#4b5563;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:4px;
+    }
+
+    .client-stat-item {
+      margin-right:8px;
+    }
+
+    .client-last {
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    .client-actions {
+      margin-top:6px;
+      display:flex;
+      justify-content:flex-start;
+    }
+
+    .client-actions button {
+      padding:5px 10px;
+      font-size:12px;
+    }
+
+    .client-card-vip {
+      border-color:#fbbf24;
+      box-shadow:0 2px 8px rgba(251,191,36,0.25);
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      #hamburger-menu {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-250px);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 70px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .filters {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .filter-btn {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+
+      .input-search {
+        width: 100%;
+      }
+
+      .reservations-container {
+        padding: 10px;
+      }
+
+      .reservation-card {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: auto;
+        text-align: left;
+      }
+
+      label {
+        font-size: 0.9rem;
+      }
+
+      input,
+      select,
+      textarea {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+
+      button {
+        font-size: 15px;
+        padding: 12px;
+      }
+
+      .chart-container {
+        max-width:100%;
+      }
+
+      .work-schedule-grid {
+        max-height: 260px;
+      }
+
+      .work-slot {
+        grid-template-columns: 105px 1.5fr 1.2fr 1.2fr;
+      }
+
+      .week-schedule-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .image-container {
+      flex: 1;
+      background-image: url("reserva.jpg");
+      background-size: cover;
+      background-position: center;
+      min-height: 400px;
+      border-radius: 0 0 12px 12px;
     }
   </style>
-
-  <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f6f9;
-    color: #333;
-    display: flex;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-
-  /* --- SIDEBAR --- */
-  .sidebar {
-    width: 250px;
-    background-color: #2F4F4F;
-    padding: 30px 20px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100vh;
-    border-top-right-radius: 12px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transition: transform 0.3s ease;
-    z-index: 100;
-  }
-
-  .sidebar h2 {
-    font-size: 26px;
-    color: #fff;
-    margin-bottom: 50px;
-    text-align: center;
-  }
-
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .sidebar ul li {
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    text-align: center;
-    transition: background-color 0.3s;
-  }
-
-  .sidebar ul li.active,
-  .sidebar ul li:hover {
-    background-color: #4CAF50;
-  }
-
-  /* --- MAIN CONTENT --- */
-  .main-content {
-    margin-left: 250px;
-    padding: 30px;
-    background-color: #fff;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    width: calc(100% - 250px);
-    height: 100vh;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-  }
-
-  h1 { margin-bottom: 20px; }
-
-  .filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-  }
-
-  .filter-btn {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    transition: all 0.3s;
-  }
-
-  .filter-btn:hover { transform: scale(1.05); }
-  .all { background-color: #555; }
-  .pending { background-color: #f0ad4e; }
-  .attended { background-color: #4CAF50; }
-  .postponed { background-color: #5bc0de; }
-  .filter-btn.active { outline: 3px solid #222; }
-
-  /* Reservations grid */
-  .reservations-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
-  }
-
-  .reservation-card {
-    background-color: #fff;
-    width: 280px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-    overflow: hidden;
-    word-wrap: break-word;
-    max-height: 100%;  /* Adjusts height dynamically based on content */
-    display: flex;
-    flex-direction: column;
-  }
-
-  .reservation-card:hover { transform: scale(1.02); }
-
-  /* Adjust buttons */
-  .status-button, .postpone-button {
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    font-size: 14px;
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .status-button { background-color: #4CAF50; }
-  .postpone-button { background-color: #f0ad4e; }
-
-  /* --- Other sections --- */
-  .hidden { display: none; }
-  .input-field {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-  }
-
-  button.add-btn {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  button.add-btn:hover { background-color: #45a049; }
-
-  ul.item-list {
-    list-style: none;
-    padding: 0;
-    margin-top: 10px;
-  }
-
-  ul.item-list li {
-    background: #f1f1f1;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 5px;
-  }
-
-  /* --- HAMBURGER MENU --- */
-  #hamburger-menu {
-    display: none;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 30px;
-    border: none;
-    padding: 12px;
-    border-radius: 6px;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 110;
-    cursor: pointer;
-  }
-
-  /* --- HAMBURGER MENU VISIBLE --- */
-  @media (max-width: 768px) {
-    #hamburger-menu {
-      display: block;
-    }
-
-    .sidebar {
-      transform: translateX(-250px);
-    }
-
-    .sidebar.open {
-      transform: translateX(0);
-    }
-
-    .main-content {
-      margin-left: 0;
-      width: 100%;
-      padding-top: 70px;
-    }
-
-    /* Adjust the title of "Reservas" */
-    h1 {
-      font-size: 1.5rem;
-    }
-
-    .filters {
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .filter-btn {
-      width: 100%;
-      font-size: 0.9rem;
-      padding: 12px;
-    }
-
-    /* Adapt the content in mobile */
-    .reservations-container {
-      padding: 10px;
-    }
-
-    .reservation-card {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      height: auto; /* Allow cards to grow based on content */
-      text-align: center;
-    }
-
-    label {
-      font-size: 0.9rem;
-    }
-
-    input,
-    select,
-    textarea {
-      font-size: 0.9rem;
-      padding: 10px;
-    }
-
-    button {
-      font-size: 15px;
-      padding: 12px;
-    }
-  }
-
-  /* --- IMAGE CONTAINER --- */
-  .image-container {
-    flex: 1;
-    background-image: url("reserva.jpg");
-    background-size: cover;
-    background-position: center;
-    min-height: 400px;
-    border-radius: 0 0 12px 12px;
-  }
-
-</style>
 </head>
 
 <body>
-    <!-- Botón menú hamburguesa (solo visible en móviles y tablets) -->
-<button id="hamburger-menu" class="hamburger-menu">
-  &#9776; <!-- Símbolo de hamburguesa -->
-</button>
+  <!-- Botón menú hamburguesa (solo móviles / tablets) -->
+  <button id="hamburger-menu" class="hamburger-menu">
+    &#9776;
+  </button>
 
-<!-- Sidebar - Menú de navegación -->
-<div class="sidebar" id="sidebar">
-  <h2>SPA Admin</h2>
-  <ul>
-    <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
-    <li id="menu-servicios" onclick="showSection('servicios')">Servicios</li>
-    <li id="menu-clientes" onclick="showSection('clientes')">Clientes</li>
-    <li id="menu-ajustes" onclick="showSection('ajustes')">Ajustes</li>
-  </ul>
-</div>
+  <!-- Sidebar - Menú de navegación -->
+  <div class="sidebar" id="sidebar">
+    <h2>SPA Admin</h2>
+    <ul>
+      <li id="menu-horario" onclick="showSection('horario')">Horario de trabajo</li>
+      <li id="menu-reservas" class="active" onclick="showSection('reservas')">Reservas</li>
+      <li id="menu-servicios" onclick="showSection('servicios')">Servicios</li>
+      <li id="menu-clientes" onclick="showSection('clientes')">Clientes</li>
+      <li id="menu-ajustes" onclick="showSection('ajustes')">Ajustes</li>
+    </ul>
+  </div>
 
   <div class="main-content">
+    <!-- HORARIO (NUEVA SECCIÓN) -->
+    <section id="horario" class="hidden">
+      <h1>Horario de trabajo</h1>
+      <p style="font-size:14px; color:#666; margin-bottom:8px;">
+        Vista diaria y semanal de las reservas entre las <strong>10:00 y las 18:00</strong>.  
+        Cada bloque representa un servicio de <strong>1 hora</strong>.
+      </p>
+
+      <div class="work-view-toggle">
+        <button id="view-toggle-day" class="view-toggle-btn active" onclick="setScheduleView('day')">
+          Hoy
+        </button>
+        <button id="view-toggle-week" class="view-toggle-btn" onclick="setScheduleView('week')">
+          Semana
+        </button>
+      </div>
+
+      <!-- Vista día (HOY) -->
+      <div id="work-schedule-day" class="work-schedule">
+        <div class="work-schedule-header">
+          <div class="work-schedule-title">Horario de hoy (10:00 - 18:00)</div>
+          <div class="work-schedule-subtitle">
+            Día de hoy · Cliente · Franja de 1 hora · Profesional
+          </div>
+        </div>
+        <div class="work-schedule-grid" id="work-schedule-grid">
+          <!-- Se rellena por JavaScript -->
+        </div>
+      </div>
+
+      <!-- Vista SEMANA -->
+      <div id="work-schedule-week" class="work-schedule hidden">
+        <div class="work-schedule-header">
+          <div class="work-schedule-title">Reservas de la semana actual</div>
+          <div class="work-schedule-subtitle">
+            Lunes a domingo · Bloques de 1 hora (10:00 - 18:00) · Cliente · Servicio · Profesional
+          </div>
+        </div>
+        <div class="week-schedule-grid" id="week-schedule-grid">
+          <!-- Se rellena por JavaScript -->
+        </div>
+      </div>
+    </section>
+
     <!-- RESERVAS -->
     <section id="reservas">
       <h1>Reservas registradas</h1>
       <p style="font-size:14px; color:#666;">(Actualización en tiempo real ⚡)</p>
 
+      <!-- FILTROS -->
       <div class="filters">
-        <button class="filter-btn pending" onclick="setFilter('Pendiente', this)">Pendientes</button>
-        <button class="filter-btn attended" onclick="setFilter('Atendido', this)">Atendidas</button>
-        <button class="filter-btn postponed" onclick="setFilter('Aplazado', this)">Aplazadas</button>
+        <button class="filter-btn all" data-filter="all" onclick="setFilter('all', this)">Todas</button>
+        <button class="filter-btn pending" data-filter="Pendiente" onclick="setFilter('Pendiente', this)">Pendientes</button>
+        <button class="filter-btn attended" data-filter="Atendido" onclick="setFilter('Atendido', this)">Atendidas</button>
+        <button class="filter-btn postponed" data-filter="Aplazado" onclick="setFilter('Aplazado', this)">Aplazadas</button>
+
+        <input
+          type="text"
+          class="input-search"
+          placeholder="Buscar por nombre, email o código..."
+          oninput="onSearchChange(this.value)"
+        />
+      </div>
+
+      <!-- DASHBOARD RESUMEN -->
+      <div class="summary">
+        <div class="summary-cards">
+          <div class="summary-card" onclick="filterFromSummary('all')">
+            <span>Total reservas</span>
+            <strong id="summary-total">0</strong>
+          </div>
+          <div class="summary-card" onclick="filterFromSummary('Pendiente')">
+            <span>Pendientes</span>
+            <strong id="summary-pending">0</strong>
+          </div>
+          <div class="summary-card" onclick="filterFromSummary('Atendido')">
+            <span>Atendidas</span>
+            <strong id="summary-attended">0</strong>
+          </div>
+          <div class="summary-card" onclick="filterFromSummary('Aplazado')">
+            <span>Aplazadas</span>
+            <strong id="summary-postponed">0</strong>
+          </div>
+          <div class="summary-card" onclick="filterFromSummary('today')">
+            <span>Reservas de hoy</span>
+            <strong id="summary-today">0</strong>
+          </div>
+          <div class="summary-card" onclick="filterFromSummary('all')">
+            <span>Ingresos estimados (€)</span>
+            <strong id="summary-income">0.00</strong>
+          </div>
+        </div>
+        <p class="last-update">
+          Última actualización: <span id="last-update">-</span>
+        </p>
+      </div>
+
+      <!-- GRÁFICO SERVICIOS -->
+      <div class="chart-container">
+        <h3>Reservas por servicio</h3>
+        <p class="top-service-label">
+          Servicio más pedido: <strong id="top-service-label">-</strong>
+        </p>
+        <canvas id="services-chart"></canvas>
+      </div>
+
+      <!-- LEYENDA DE ALERTAS -->
+      <div class="alerts-legend" id="alerts-legend">
+        <span class="legend-title">Alertas:</span>
+        <span class="legend-item legend-soon">
+          <span class="legend-dot"></span> Próximas 2 h
+        </span>
+        <span class="legend-item legend-today">
+          <span class="legend-dot"></span> Hoy
+        </span>
+        <span class="legend-item legend-overdue">
+          <span class="legend-dot"></span> Pendiente pasada
+        </span>
       </div>
 
       <div id="reservations-container" class="reservations-container">
@@ -473,27 +1072,216 @@
     <!-- SERVICIOS -->
     <section id="servicios" class="hidden">
       <h1>Gestión de Servicios</h1>
-      <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
-      <input type="number" id="service-price" class="input-field" placeholder="Precio (€)" />
-      <button class="add-btn" onclick="addService()">Agregar servicio</button>
+
+      <div class="service-form">
+        <input type="text" id="service-name" class="input-field" placeholder="Nombre del servicio" />
+        <input type="number" id="service-price" class="input-field" placeholder="Precio (€)" />
+        <input type="number" id="service-duration" class="input-field" placeholder="Duración (minutos)" />
+        <input type="text" id="service-category" class="input-field" placeholder="Categoría (ej. Masaje, Peluquería, Uñas...)" />
+        <input type="text" id="service-worker" class="input-field" placeholder="Profesional / trabajador (ej. Ana, Pedro)" />
+        <label class="checkbox-inline">
+          <input type="checkbox" id="service-active" checked />
+          Activo
+        </label>
+        <button class="add-btn" onclick="saveService()" id="service-save-btn">Agregar servicio</button>
+        <button class="add-btn" style="background:#6c757d; display:none;" onclick="cancelEditService()" id="service-cancel-btn">
+          Cancelar edición
+        </button>
+      </div>
+      <p style="font-size:13px;color:#666;margin-top:4px;">Haz clic en "Editar" en la lista para modificar un servicio.</p>
+
       <ul id="service-list" class="item-list"></ul>
     </section>
 
-    <!-- CLIENTES -->
+    <!-- CLIENTES (MEJORADO) -->
     <section id="clientes" class="hidden">
-      <h1>Clientes registrados</h1>
+      <h1>Gestión de clientes</h1>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:8px;">
+        Analiza el comportamiento de tus clientes, identifica a los más fieles y detecta inactividad.
+      </p>
+
+      <!-- Resumen clientes -->
+      <div class="summary-cards clients-summary-cards">
+        <div class="summary-card">
+          <span>Clientes únicos</span>
+          <strong id="clients-total-count">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Media reservas por cliente</span>
+          <strong id="clients-avg-res">0</strong>
+        </div>
+        <div class="summary-card">
+          <span>Top por reservas</span>
+          <strong id="clients-top-count">-</strong>
+        </div>
+        <div class="summary-card">
+          <span>Top por facturación</span>
+          <strong id="clients-top-amount">-</strong>
+        </div>
+      </div>
+
+      <!-- Filtros clientes -->
+      <div class="client-filters-row">
+        <input
+          type="text"
+          class="input-search"
+          placeholder="Buscar cliente por nombre o email..."
+          oninput="onClientSearchChange(this.value)"
+        />
+        <input
+          type="number"
+          class="input-field"
+          style="max-width:140px;"
+          id="clients-min-reservations"
+          placeholder="Mín. reservas"
+          oninput="onClientMinReservationsChange(this.value)"
+        />
+        <input
+          type="number"
+          class="input-field"
+          style="max-width:160px;"
+          id="clients-min-amount"
+          placeholder="Mín. gasto (€)"
+          oninput="onClientMinAmountChange(this.value)"
+        />
+        <select id="clients-segment-filter" onchange="onClientSegmentChange(this.value)">
+          <option value="all">Todos los clientes</option>
+          <option value="new">Nuevos (1 reserva)</option>
+          <option value="frequent">Frecuentes (2-4 reservas)</option>
+          <option value="vip">VIP (+5 reservas o alto gasto)</option>
+          <option value="inactive">Inactivos (+90 días sin venir)</option>
+        </select>
+        <button class="add-btn" style="background:#5bc0de;" onclick="toggleClientSort()">
+          Ordenar por reservas
+        </button>
+      </div>
+
+      <p id="clients-summary" style="font-size:14px; color:#666; margin-bottom:8px;"></p>
       <ul id="clients-list" class="item-list"></ul>
     </section>
 
     <!-- AJUSTES -->
     <section id="ajustes" class="hidden">
-      <h1>Configuración del Negocio</h1>
-      <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
-      <input id="config-horario" class="input-field" placeholder="Horario de atención" />
-      <button class="add-btn" onclick="saveSettings()">Guardar ajustes</button>
-      <button class="add-btn" style="background:#d9534f" onclick="clearData()">Limpiar base de datos</button>
+      <h1>Ajustes del negocio</h1>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:10px;">
+        Configura la información principal del spa, las reglas de reservas y las opciones de datos.
+      </p>
+
+      <div class="config-grid">
+        <!-- Card: Datos del negocio -->
+        <div class="config-card">
+          <h2>Datos del negocio</h2>
+          <p class="config-subtitle">Información básica que se puede mostrar al cliente en comunicaciones.</p>
+          <input id="config-direccion" class="input-field" placeholder="Dirección del negocio" />
+          <input id="config-horario" class="input-field" placeholder="Horario de atención (ej. Lun-Dom 10:00-20:00)" />
+          <input id="config-telefono" class="input-field" placeholder="Teléfono de contacto" />
+        </div>
+
+        <!-- Card: Canales y contacto -->
+        <div class="config-card">
+          <h2>Canales de contacto</h2>
+          <p class="config-subtitle">Define cómo puede contactar el cliente con el spa.</p>
+          <input id="config-whatsapp" class="input-field" placeholder="WhatsApp (número o enlace)" />
+          <input id="config-email" class="input-field" placeholder="Correo de contacto" />
+          <label class="config-label-inline">Notas públicas / información adicional</label>
+          <textarea id="config-politica" class="input-field" placeholder="Política de cancelación / normas" rows="3"></textarea>
+        </div>
+
+        <!-- Card: Parámetros de reservas -->
+        <div class="config-card">
+          <h2>Parámetros de reservas</h2>
+          <p class="config-subtitle">Reglas internas para la gestión de citas y alertas.</p>
+
+          <label class="checkbox-inline">
+            <input type="checkbox" id="config-alerts-enabled" checked />
+            Activar alertas visuales en las reservas
+          </label>
+          <p class="config-small-note">
+            Si se desactiva, las tarjetas no se resaltarán por hora ni mostrarán mensajes de alerta.
+          </p>
+
+          <label class="config-label-inline">Ventana de alerta “próximas” (horas)</label>
+          <input
+            type="number"
+            id="config-alert-soon-hours"
+            class="input-field"
+            placeholder="Ej. 2"
+            min="1"
+            max="12"
+          />
+          <p class="config-small-note">
+            Nº de horas antes de la reserva para marcarla como “Próxima” (⏰).
+          </p>
+
+          <label class="config-label-inline">Límite orientativo de reservas</label>
+          <div class="inline-input-row">
+            <input
+              type="number"
+              id="config-max-res-day"
+              class="input-field"
+              placeholder="Máx. reservas por día (global)"
+              min="0"
+            />
+            <input
+              type="number"
+              id="config-max-res-worker-day"
+              class="input-field"
+              placeholder="Máx. por trabajador/día"
+              min="0"
+            />
+          </div>
+          <p class="config-small-note">
+            Estos límites se guardan como referencia para planificación y futuros módulos (no bloquean reservas desde aquí).
+          </p>
+        </div>
+
+        <!-- Card: Notas internas y datos -->
+        <div class="config-card">
+          <h2>Notas internas y datos</h2>
+          <p class="config-subtitle">Gestión de información interna y exportación de datos.</p>
+
+          <textarea
+            id="config-notas"
+            class="input-field"
+            placeholder="Notas internas para el equipo (no se muestran al cliente)"
+            rows="4"
+          ></textarea>
+
+          <div class="config-actions">
+            <button class="add-btn" style="background:#5bc0de;" onclick="exportReservationsCSV()">
+              Exportar reservas a CSV
+            </button>
+            <button class="add-btn" style="background:#d9534f;" onclick="clearData()">
+              Limpiar base de datos
+            </button>
+          </div>
+          <p class="config-small-note">
+            La exportación incluye reservas con servicio y profesional asignado para análisis externo.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="add-btn" onclick="saveSettings()">Guardar todos los ajustes</button>
+      </div>
     </section>
   </div>
+
+  <!-- MODAL APLAZAR RESERVA -->
+  <div id="reschedule-modal" class="reschedule-modal">
+    <div class="modal-content">
+      <h2>Reprogramar reserva</h2>
+      <input type="date" id="reschedule-date" class="input-field" />
+      <input type="time" id="reschedule-time" class="input-field" />
+      <div class="modal-actions">
+        <button class="add-btn" onclick="confirmReschedule()">Guardar cambios</button>
+        <button class="add-btn" style="background:#d9534f" onclick="closeRescheduleModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Firebase Script -->
   <script type="module">
@@ -504,11 +1292,11 @@
       onSnapshot,
       addDoc,
       getDocs,
+      getDoc,
+      setDoc,
       updateDoc,
       deleteDoc,
-      doc,
-      query,
-      where
+      doc
     } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
     // ✅ Configuración Firebase
@@ -527,29 +1315,500 @@
     let allReservations = [];
     let currentFilter = "all";
     let currentEditId = null;
+    let searchTerm = "";
+
+    // cache servicios para ingresos, gráfico y trabajador
+    let servicesCache = {};
+    let servicesChart = null;
+
+    // Clientes (estado para filtros)
+    let clientsData = [];
+    let clientSearchTerm = "";
+    let clientMinReservations = 0;
+    let clientMinAmount = 0;
+    let clientSortByCount = true;
+    let clientSegment = "all"; // all/new/frequent/vip/inactive
+
+    // Servicios (estado edición)
+    let editingServiceId = null;
+
+    // Config de negocio (para alertas y límites)
+    let businessConfig = {
+      alertsEnabled: true,
+      alertSoonHours: 2,
+      maxResDay: 0,
+      maxResWorkerDay: 0
+    };
+
+    const INACTIVE_DAYS = 90;
+
+    // Constantes horario trabajo
+    const WORK_START_HOUR = 10;
+    const WORK_END_HOUR = 18; // hasta 18:00 (slot final 17:00-18:00)
+
+    // Vista horario (día / semana)
+    let scheduleView = "day";
+
+    // ====== HELPERS FECHAS ======
+    function getTodayYMD() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`; // fecha local, no UTC
+    }
+
+    function parseDateYYYYMMDD(str) {
+      if (!str) return null;
+      const d = new Date(str + "T00:00:00");
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function daysBetween(aStr, bStr) {
+      const a = parseDateYYYYMMDD(aStr);
+      const b = parseDateYYYYMMDD(bStr);
+      if (!a || !b) return null;
+      const diffMs = b - a;
+      return diffMs / (1000 * 60 * 60 * 24);
+    }
+
+    function dateToYMD(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function getWeekDates() {
+      const today = new Date();
+      const day = today.getDay(); // 0 domingo, 1 lunes ...
+      const diffToMonday = (day + 6) % 7; // 0 si lunes, 1 si martes...
+      const monday = new Date(today);
+      monday.setDate(today.getDate() - diffToMonday);
+
+      const days = [];
+      const dayNames = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        days.push({
+          dateStr: dateToYMD(d),
+          label: `${dayNames[d.getDay()]}`
+        });
+      }
+      return days;
+    }
+
+    function formatCurrency(amount) {
+      if (!amount || isNaN(amount)) return "0 €";
+      return amount.toFixed(2) + " €";
+    }
+
+    // ====== COMPARADOR RESERVAS (fecha + hora) ======
+    function compareReservations(a, b) {
+      const dA = a.date || "";
+      const dB = b.date || "";
+      if (dA !== dB) return dA.localeCompare(dB);
+      const tA = a.time || "";
+      const tB = b.time || "";
+      return tA.localeCompare(tB);
+    }
+
+    // ====== HELPER ALERTAS RESERVAS ======
+    function getReservationAlertFlags(r) {
+      const now = new Date();
+      const todayStr = getTodayYMD();
+
+      if (!businessConfig.alertsEnabled) {
+        return { today: false, soon: false, overdue: false };
+      }
+
+      const isToday = r.date === todayStr;
+
+      let resDateTime = null;
+      if (r.date && r.time) {
+        resDateTime = new Date(`${r.date}T${r.time}:00`);
+      }
+
+      let isSoon = false;
+      let isOverdue = false;
+
+      const alertWindowHours =
+        typeof businessConfig.alertSoonHours === "number" && businessConfig.alertSoonHours > 0
+          ? businessConfig.alertSoonHours
+          : 2;
+
+      if (resDateTime instanceof Date && !isNaN(resDateTime.getTime())) {
+        const diffMs = resDateTime - now;
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        if (diffHours >= 0 && diffHours <= alertWindowHours) {
+          isSoon = true;
+        }
+
+        if (diffMs < 0 && (r.status === "Pendiente" || !r.status)) {
+          isOverdue = true;
+        }
+      }
+
+      return { today: isToday, soon: isSoon, overdue: isOverdue };
+    }
+
+    // ====== CATEGORÍA CLIENTES / INACTIVOS ======
+    function getClientCategory(c) {
+      if (!c.count || c.count <= 0) return "none";
+      if (c.count === 1) return "new";
+      if (c.count >= 2 && c.count <= 4) return "frequent";
+      if (c.count >= 5 || (c.totalAmount && c.totalAmount >= 300)) return "vip";
+      return "frequent";
+    }
+
+    function isClientInactive(c) {
+      if (!c.lastDate) return false;
+      const todayStr = getTodayYMD();
+      const d = daysBetween(c.lastDate, todayStr);
+      if (d === null) return false;
+      return d >= INACTIVE_DAYS;
+    }
+
+    // ====== HORARIO DE TRABAJO (HOY) ======
+    function renderWorkSchedule() {
+      const grid = document.getElementById("work-schedule-grid");
+      if (!grid) return;
+
+      grid.innerHTML = "";
+
+      const todayStr = getTodayYMD();
+
+      // Actualizar título con día real
+      const titleEl = document.querySelector("#work-schedule-day .work-schedule-title");
+      if (titleEl) {
+        const dayNames = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+        const todayDate = new Date();
+        const dayName = dayNames[todayDate.getDay()];
+        const [y, m, d] = todayStr.split("-");
+        titleEl.textContent = `Horario de hoy - ${dayName} ${d}/${m}/${y} (10:00 - 18:00)`;
+      }
+
+      const slots = {};
+      for (let h = WORK_START_HOUR; h < WORK_END_HOUR; h++) {
+        slots[h] = [];
+      }
+
+      allReservations.forEach((r) => {
+        if (r.date !== todayStr) return;
+        if (!r.time) return;
+
+        const parts = r.time.split(":");
+        const hour = parseInt(parts[0], 10);
+        if (isNaN(hour)) return;
+        if (hour < WORK_START_HOUR || hour >= WORK_END_HOUR) return;
+
+        const svc = servicesCache[r.massage_type || ""] || null;
+        const workerName = svc && svc.worker ? svc.worker : "Sin asignar";
+
+        slots[hour].push({
+          id: r.id,
+          name: r.full_name || "Sin nombre",
+          time: r.time,
+          service: r.massage_type || "",
+          worker: workerName,
+          status: r.status || "Pendiente"
+        });
+      });
+
+      for (let h = WORK_START_HOUR; h < WORK_END_HOUR; h++) {
+        let items = slots[h] || [];
+        items = items.slice().sort((a, b) => (a.time || "").localeCompare(b.time || ""));
+
+        const row = document.createElement("div");
+        row.classList.add("work-slot");
+
+        let hasConflict = false;
+        if (items && items.length > 0) {
+          const countsByWorker = {};
+          items.forEach(e => {
+            const w = e.worker || "Sin asignar";
+            countsByWorker[w] = (countsByWorker[w] || 0) + 1;
+          });
+          hasConflict = Object.values(countsByWorker).some(c => c > 1);
+        }
+
+        const endHour = h + 1;
+
+        if (items && items.length > 0) {
+          row.classList.add("work-slot-busy");
+
+          const clientsText = items
+            .map(e => {
+              const rowClass = e.status === "Atendido" ? "work-res-row-attended" : "";
+              return `
+                <div class="work-res-row ${rowClass}">
+                  <div class="work-res-main">${e.name} (${e.time})</div>
+                  <div class="work-res-actions">
+                    <button
+                      class="mini-status-btn mini-status-attended"
+                      onclick="setReservationStatus('${e.id}', 'Atendido')"
+                    >
+                      Atendido
+                    </button>
+                    <button
+                      class="mini-status-btn mini-status-not"
+                      onclick="setReservationStatus('${e.id}', 'Pendiente')"
+                    >
+                      No atendido
+                    </button>
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+
+          const servicesText = items
+            .map(e => e.service || "-")
+            .join("<br>");
+          const workersText = items
+            .map(e => e.worker || "Sin asignar")
+            .join("<br>");
+
+          row.innerHTML = `
+            <div class="work-slot-hour">
+              ${String(h).padStart(2,"0")}:00 - ${String(endHour).padStart(2,"0")}:00
+            </div>
+            <div>
+              <span class="work-slot-label">Cliente(s):</span><br>${clientsText}
+            </div>
+            <div>
+              <span class="work-slot-label">Servicio(s):</span><br>${servicesText}
+            </div>
+            <div>
+              <span class="work-slot-label">Profesional(es):</span><br>${workersText}
+            </div>
+          `;
+
+          if (hasConflict) {
+            row.classList.add("work-slot-conflict");
+            row.innerHTML += `
+              <div style="grid-column:1 / -1; font-size:11px; color:#b91c1c; margin-top:4px;">
+                ⚠️ Conflicto de horario: mismo profesional con varias reservas en esta franja.
+              </div>
+            `;
+          }
+        } else {
+          row.classList.add("work-slot-free");
+          row.innerHTML = `
+            <div class="work-slot-hour">
+              ${String(h).padStart(2,"0")}:00 - ${String(endHour).padStart(2,"0")}:00
+            </div>
+            <div>Disponible</div>
+            <div>-</div>
+            <div>-</div>
+          `;
+        }
+
+        grid.appendChild(row);
+      }
+    }
+
+    // ====== HORARIO SEMANAL (OCUPADO / DISPONIBLE + CONFLICTOS) ======
+    function renderWeeklySchedule() {
+      const grid = document.getElementById("week-schedule-grid");
+      if (!grid) return;
+
+      grid.innerHTML = "";
+
+      const todayStr = getTodayYMD();
+      const weekDays = getWeekDates();
+
+      weekDays.forEach(day => {
+        const card = document.createElement("div");
+        card.classList.add("week-day-card");
+
+        const isPastDay = day.dateStr < todayStr;
+        const isToday = day.dateStr === todayStr;
+
+        if (isPastDay) card.classList.add("week-day-past");
+        if (isToday) card.classList.add("week-day-today");
+
+        card.innerHTML = `
+          <div class="week-day-header">${day.label}</div>
+          <div class="week-day-sub">${day.dateStr}</div>
+        `;
+
+        const slots = {};
+        for (let h = WORK_START_HOUR; h < WORK_END_HOUR; h++) {
+          slots[h] = [];
+        }
+
+        allReservations.forEach((r) => {
+          if (r.date !== day.dateStr || !r.time) return;
+
+          const parts = r.time.split(":");
+          const hour = parseInt(parts[0], 10);
+          if (isNaN(hour) || hour < WORK_START_HOUR || hour >= WORK_END_HOUR) return;
+
+          const svc = servicesCache[r.massage_type || ""] || null;
+          const workerName = svc && svc.worker ? svc.worker : "Sin asignar";
+
+          slots[hour].push({
+            id: r.id,
+            name: r.full_name || "Sin nombre",
+            time: r.time,
+            service: r.massage_type || "",
+            worker: workerName,
+            status: r.status || "Pendiente"
+          });
+        });
+
+        for (let h = WORK_START_HOUR; h < WORK_END_HOUR; h++) {
+          let items = slots[h] || [];
+          items = items.slice().sort((a, b) => (a.time || "").localeCompare(b.time || ""));
+
+          const itemDiv = document.createElement("div");
+          itemDiv.classList.add("week-reservation-item");
+
+          const endHour = h + 1;
+          const hourLabel = `${String(h).padStart(2, "0")}:00 - ${String(endHour).padStart(2, "0")}:00`;
+
+          let hasConflict = false;
+          if (items && items.length > 0) {
+            const countsByWorker = {};
+            items.forEach(e => {
+              const w = e.worker || "Sin asignar";
+              countsByWorker[w] = (countsByWorker[w] || 0) + 1;
+            });
+            hasConflict = Object.values(countsByWorker).some(c => c > 1);
+          }
+
+          if (items && items.length > 0) {
+            const lines = items.map(e => {
+              const serviceLabel = e.service ? ` (${e.service})` : "";
+              const rowClass = e.status === "Atendido" ? "week-res-row-attended" : "";
+              return `
+                <div class="week-res-row ${rowClass}">
+                  <div class="week-res-main">
+                    ${e.time} · ${e.name}${serviceLabel} · ${e.worker}
+                  </div>
+                  <div class="week-res-actions">
+                    <button
+                      class="mini-status-btn mini-status-attended"
+                      onclick="setReservationStatus('${e.id}', 'Atendido')"
+                    >
+                      Atendido
+                    </button>
+                    <button
+                      class="mini-status-btn mini-status-not"
+                      onclick="setReservationStatus('${e.id}', 'Pendiente')"
+                    >
+                      No atendido
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join("");
+
+            itemDiv.innerHTML = `
+              <div class="week-reservation-time">${hourLabel}</div>
+              <div>${lines}</div>
+            `;
+
+            if (hasConflict) {
+              itemDiv.classList.add("week-slot-conflict");
+              itemDiv.innerHTML += `
+                <div style="font-size:11px; color:#b91c1c; margin-top:2px;">
+                  ⚠️ Conflicto de horario: mismo profesional con varias reservas en esta hora.
+                </div>
+              `;
+            }
+          } else {
+            const textEmpty = isPastDay ? "Día pasado" : "Disponible";
+            const extraClass = isPastDay ? "week-no-res-past" : "";
+            itemDiv.innerHTML = `
+              <div class="week-reservation-time">${hourLabel}</div>
+              <div class="week-no-res ${extraClass}">${textEmpty}</div>
+            `;
+          }
+
+          card.appendChild(itemDiv);
+        }
+
+        grid.appendChild(card);
+      });
+    }
+
+    // ====== CAMBIO VISTA HORARIO (DÍA / SEMANA) ======
+    window.setScheduleView = (view) => {
+      scheduleView = view;
+      const dayBlock = document.getElementById("work-schedule-day");
+      const weekBlock = document.getElementById("work-schedule-week");
+      const btnDay = document.getElementById("view-toggle-day");
+      const btnWeek = document.getElementById("view-toggle-week");
+
+      if (view === "day") {
+        dayBlock.classList.remove("hidden");
+        weekBlock.classList.add("hidden");
+        btnDay.classList.add("active");
+        btnWeek.classList.remove("active");
+        renderWorkSchedule();
+      } else {
+        dayBlock.classList.add("hidden");
+        weekBlock.classList.remove("hidden");
+        btnDay.classList.remove("active");
+        btnWeek.classList.add("active");
+        renderWeeklySchedule();
+      }
+    };
 
     // ========== NAVEGACIÓN ENTRE SECCIONES ==========
     window.showSection = (id) => {
       document.querySelectorAll("section").forEach(sec => sec.classList.add("hidden"));
       document.getElementById(id).classList.remove("hidden");
       document.querySelectorAll(".sidebar ul li").forEach(li => li.classList.remove("active"));
-      document.getElementById("menu-" + id).classList.add("active");
+      const menuItem = document.getElementById("menu-" + id);
+      if (menuItem) menuItem.classList.add("active");
 
       if (id === "servicios") loadServices();
       if (id === "clientes") loadClients();
+      if (id === "ajustes") loadSettings();
+      if (id === "horario") {
+        if (scheduleView === "day") {
+          renderWorkSchedule();
+        } else {
+          renderWeeklySchedule();
+        }
+      }
     };
 
     // ========== RESERVAS EN TIEMPO REAL ==========
     function listenReservations() {
       const reservationsRef = collection(db, "reservations");
 
-      const q = currentFilter === "all"
-        ? reservationsRef
-        : query(reservationsRef, where("status", "==", currentFilter));
-
-      onSnapshot(q, (snapshot) => {
+      onSnapshot(reservationsRef, (snapshot) => {
         allReservations = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+        updateSummary();
         renderReservations();
+        renderServicesChart();
+        renderWorkSchedule();
+        renderWeeklySchedule();
+      });
+    }
+
+    // ========== SERVICIOS EN TIEMPO REAL ==========
+    function listenServicesRealtime() {
+      const servicesRef = collection(db, "services");
+      onSnapshot(servicesRef, (snapshot) => {
+        servicesCache = {};
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
+          if (!d.name) return;
+          servicesCache[d.name] = d;
+        });
+        updateSummary();
+        renderServicesChart();
+        renderReservations();
+        renderWorkSchedule();
+        renderWeeklySchedule();
       });
     }
 
@@ -557,91 +1816,845 @@
       const container = document.getElementById("reservations-container");
       container.innerHTML = "";
 
-      const filtered = currentFilter === "all"
-        ? allReservations
-        : allReservations.filter(r => r.status === currentFilter);
+      const todayStr = getTodayYMD();
+
+      const sortedReservations = allReservations.slice().sort(compareReservations);
+
+      const filtered = sortedReservations.filter((r) => {
+        const term = searchTerm.trim().toLowerCase();
+
+        const matchesStatus =
+          currentFilter === "all" || currentFilter === "today"
+            ? true
+            : r.status === currentFilter;
+
+        const matchesToday =
+          currentFilter === "today"
+            ? r.date === todayStr
+            : true;
+
+        if (!term) {
+          return matchesStatus && matchesToday;
+        }
+
+        const name = (r.full_name || "").toLowerCase();
+        const email = (r.email || "").toLowerCase();
+        const code = (r.reservation_code ? String(r.reservation_code) : "").toLowerCase();
+
+        const matchSearch =
+          name.includes(term) ||
+          email.includes(term) ||
+          code.includes(term);
+
+        return matchesStatus && matchesToday && matchSearch;
+      });
 
       if (filtered.length === 0) {
         container.innerHTML = "<p>No hay reservas para mostrar.</p>";
         return;
       }
 
+      const legend = document.getElementById("alerts-legend");
+      if (legend) {
+        legend.style.display = businessConfig.alertsEnabled ? "flex" : "none";
+      }
+
       filtered.forEach((data) => {
+        const svc = servicesCache[data.massage_type || ""] || null;
+        const workerName = svc && svc.worker ? svc.worker : "Sin asignar";
+
+        const flags = getReservationAlertFlags(data);
+        let alertLabel = "";
+        if (flags.overdue) {
+          alertLabel = "⚠️ Reserva pendiente con hora pasada";
+        } else if (flags.soon) {
+          alertLabel = `⏰ Próxima en menos de ${businessConfig.alertSoonHours || 2} horas`;
+        } else if (flags.today) {
+          alertLabel = "📅 Reserva de hoy";
+        }
+
         const card = document.createElement("div");
         card.classList.add("reservation-card");
+        if (flags.overdue) {
+          card.classList.add("card-overdue");
+        } else if (flags.soon) {
+          card.classList.add("card-soon");
+        } else if (flags.today) {
+          card.classList.add("card-today");
+        }
+
         card.innerHTML = `
           <div class="reservation-info">
-            <p><strong>Nombre:</strong> ${data.full_name}</p>
-            <p><strong>Teléfono:</strong> ${data.phone}</p>
-            <p><strong>Correo:</strong> ${data.email}</p>
-            <p><strong>Servicio:</strong> ${data.massage_type}</p>
-            <p><strong>Fecha:</strong> ${data.date}</p>
-            <p><strong>Hora:</strong> ${data.time}</p>
-            <p><strong>Dirección:</strong> ${data.address}</p>
+            <p><strong>Nombre:</strong> ${data.full_name || ""}</p>
+            <p><strong>Teléfono:</strong> ${data.phone || ""}</p>
+            <p><strong>Correo:</strong> ${data.email || ""}</p>
+            <p><strong>Servicio:</strong> ${data.massage_type || ""}</p>
+            <p><strong>Profesional:</strong> ${workerName}</p>
+            <p><strong>Fecha:</strong> ${data.date || ""}</p>
+            <p><strong>Hora:</strong> ${data.time || ""}</p>
+            <p><strong>Dirección:</strong> ${data.address || ""}</p>
             <p><strong>Comentarios:</strong> ${data.comments || "No hay comentarios"}</p>
-            <p><strong>Código de Reserva:</strong> ${data.reservation_code}</p>
-            <p><strong>Estado:</strong> ${data.status}</p>
+            <p><strong>Código de Reserva:</strong> ${data.reservation_code || ""}</p>
+            <p><strong>Estado:</strong> ${data.status || ""}</p>
+            ${alertLabel && businessConfig.alertsEnabled ? `<p class="reservation-alert-label">${alertLabel}</p>` : ""}
           </div>
-          <button class="status-button" onclick="updateStatus('${data.id}', '${data.status}')">Cambiar estado</button>
+          <button
+            class="status-button status-attended"
+            onclick="setReservationStatus('${data.id}', 'Atendido')"
+          >
+            Atendido
+          </button>
+          <button
+            class="status-button status-not-attended"
+            onclick="setReservationStatus('${data.id}', 'Pendiente')"
+          >
+            No atendido
+          </button>
           <button class="postpone-button" onclick="openReschedulePopup('${data.id}')">Aplazar</button>
         `;
         container.appendChild(card);
       });
     }
 
-      // ========== CLIENTES ==========
-  async function loadClients() {
-    const list = document.getElementById("clients-list");
-    list.innerHTML = "";
-    const snapshot = await getDocs(collection(db, "reservations"));
-    const clientesUnicos = {};
-    snapshot.forEach((docSnap) => {
-      const d = docSnap.data();
-      if (!clientesUnicos[d.email]) {
-        clientesUnicos[d.email] = d.full_name;
-      }
-    });
-    Object.entries(clientesUnicos).forEach(([email, name]) => {
-      const li = document.createElement("li");
-      li.textContent = `${name} (${email})`;
-      list.appendChild(li);
-    });
-  }
+    // ========== RESUMEN / DASHBOARD ==========
+    function updateSummary() {
+      const totalEl = document.getElementById("summary-total");
+      const pendingEl = document.getElementById("summary-pending");
+      const attendedEl = document.getElementById("summary-attended");
+      const postponedEl = document.getElementById("summary-postponed");
+      const todayEl = document.getElementById("summary-today");
+      const incomeEl = document.getElementById("summary-income");
+      const lastUpdateEl = document.getElementById("last-update");
 
-    // Filtro de estado (Pendiente, Atendido, Aplazado)
-    window.setFilter = (filter, btn) => {
-      currentFilter = filter;
+      if (!totalEl) return;
+
+      const total = allReservations.length;
+      const pending = allReservations.filter(r => r.status === "Pendiente").length;
+      const attended = allReservations.filter(r => r.status === "Atendido").length;
+      const postponed = allReservations.filter(r => r.status === "Aplazado").length;
+
+      const todayStr = getTodayYMD();
+      const todayCount = allReservations.filter(r => r.date === todayStr).length;
+
+      let income = 0;
+      allReservations.forEach(r => {
+        const svcName = r.massage_type;
+        if (!svcName) return;
+        const svc = servicesCache[svcName];
+        if (svc && svc.price != null) {
+          const price = typeof svc.price === "number" ? svc.price : parseFloat(svc.price);
+          if (!isNaN(price)) income += price;
+        }
+      });
+
+      totalEl.textContent = total;
+      pendingEl.textContent = pending;
+      attendedEl.textContent = attended;
+      postponedEl.textContent = postponed;
+      todayEl.textContent = todayCount;
+      if (incomeEl) incomeEl.textContent = income.toFixed(2);
+
+      if (lastUpdateEl) {
+        lastUpdateEl.textContent = new Date().toLocaleString("es-ES");
+      }
+    }
+
+    // ========== GRÁFICO SERVICIOS ==========
+    function renderServicesChart() {
+      const canvas = document.getElementById("services-chart");
+      const topLabel = document.getElementById("top-service-label");
+      if (!canvas || typeof Chart === "undefined") return;
+
+      const counts = {};
+      allReservations.forEach(r => {
+        const key = r.massage_type || "Sin servicio";
+        counts[key] = (counts[key] || 0) + 1;
+      });
+
+      const labels = Object.keys(counts);
+      const data = Object.values(counts);
+
+      if (topLabel) {
+        if (labels.length === 0) {
+          topLabel.textContent = "-";
+        } else {
+          let maxIdx = 0;
+          for (let i = 1; i < data.length; i++) {
+            if (data[i] > data[maxIdx]) maxIdx = i;
+          }
+          topLabel.textContent = `${labels[maxIdx]} (${data[maxIdx]} reservas)`;
+        }
+      }
+
+      if (servicesChart) {
+        servicesChart.destroy();
+      }
+
+      servicesChart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Reservas por servicio",
+              data
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              ticks: { autoSkip: false }
+            },
+            y: {
+              beginAtZero: true,
+              precision: 0
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // ========== CLIENTES ==========
+    async function loadClients() {
+      const list = document.getElementById("clients-list");
+      const summaryText = document.getElementById("clients-summary");
+      const totalCountEl = document.getElementById("clients-total-count");
+      const avgResEl = document.getElementById("clients-avg-res");
+      const topCountEl = document.getElementById("clients-top-count");
+      const topAmountEl = document.getElementById("clients-top-amount");
+      if (!list) return;
+
+      list.innerHTML = "<li>Cargando clientes...</li>";
+      if (summaryText) summaryText.textContent = "";
+
+      const snapshot = await getDocs(collection(db, "reservations"));
+      const clientes = {};
+
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        if (!d.email) return;
+
+        if (!clientes[d.email]) {
+          clientes[d.email] = {
+            name: d.full_name || "Sin nombre",
+            count: 0,
+            lastDate: null,
+            lastStatus: d.status || "",
+            totalAmount: 0,
+            firstDate: null
+          };
+        }
+
+        const c = clientes[d.email];
+        c.count += 1;
+
+        if (!c.lastDate || (d.date && d.date > c.lastDate)) {
+          c.lastDate = d.date;
+          c.lastStatus = d.status || "";
+        }
+        if (!c.firstDate || (d.date && d.date < c.firstDate)) {
+          c.firstDate = d.date;
+        }
+
+        const svc = servicesCache[d.massage_type || ""] || null;
+        if (svc && svc.price != null) {
+          const price = typeof svc.price === "number" ? svc.price : parseFloat(svc.price);
+          if (!isNaN(price)) c.totalAmount += price;
+        }
+      });
+
+      clientsData = Object.entries(clientes).map(([email, info]) => ({
+        email,
+        ...info
+      }));
+
+      const totalClients = clientsData.length;
+      const totalRes = clientsData.reduce((sum, c) => sum + (c.count || 0), 0);
+      const avgRes = totalClients > 0 ? (totalRes / totalClients) : 0;
+
+      let topByCount = null;
+      let topByAmount = null;
+      clientsData.forEach(c => {
+        if (!topByCount || c.count > topByCount.count) topByCount = c;
+        if (!topByAmount || c.totalAmount > topByAmount.totalAmount) topByAmount = c;
+      });
+
+      if (totalCountEl) totalCountEl.textContent = totalClients;
+      if (avgResEl) avgResEl.textContent = avgRes.toFixed(1);
+      if (topCountEl) topCountEl.textContent = topByCount ? `${topByCount.name} (${topByCount.count})` : "-";
+      if (topAmountEl) topAmountEl.textContent = topByAmount ? `${topByAmount.name} (${formatCurrency(topByAmount.totalAmount)})` : "-";
+
+      if (summaryText) {
+        summaryText.textContent = `Total clientes únicos: ${totalClients} · Total reservas: ${totalRes}`;
+      }
+
+      renderClientsList();
+    }
+
+    function renderClientsList() {
+      const list = document.getElementById("clients-list");
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      let data = [...clientsData];
+
+      if (clientSearchTerm) {
+        data = data.filter(c =>
+          (c.name || "").toLowerCase().includes(clientSearchTerm) ||
+          (c.email || "").toLowerCase().includes(clientSearchTerm)
+        );
+      }
+
+      if (clientMinReservations > 0) {
+        data = data.filter(c => (c.count || 0) >= clientMinReservations);
+      }
+
+      if (clientMinAmount > 0) {
+        data = data.filter(c => (c.totalAmount || 0) >= clientMinAmount);
+      }
+
+      if (clientSegment !== "all") {
+        data = data.filter(c => {
+          const cat = getClientCategory(c);
+          const inactive = isClientInactive(c);
+          if (clientSegment === "new") return cat === "new";
+          if (clientSegment === "frequent") return cat === "frequent";
+          if (clientSegment === "vip") return cat === "vip";
+          if (clientSegment === "inactive") return inactive;
+          return true;
+        });
+      }
+
+      if (clientSortByCount) {
+        data.sort((a, b) => (b.count || 0) - (a.count || 0));
+      } else {
+        data.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+      }
+
+      if (data.length === 0) {
+        list.innerHTML = "<li>No hay clientes que coincidan con los filtros.</li>";
+        return;
+      }
+
+      const todayStr = getTodayYMD();
+
+      data.forEach(c => {
+        const li = document.createElement("li");
+        const category = getClientCategory(c);
+        const inactive = isClientInactive(c);
+
+        const tagsHtml = [];
+        if (category === "new") {
+          tagsHtml.push('<span class="client-tag client-tag-new">Cliente nuevo</span>');
+        } else if (category === "frequent") {
+          tagsHtml.push('<span class="client-tag client-tag-freq">Cliente frecuente</span>');
+        } else if (category === "vip") {
+          tagsHtml.push('<span class="client-tag client-tag-vip">Cliente VIP</span>');
+        }
+        if (inactive) {
+          tagsHtml.push('<span class="client-tag client-tag-inactive">Inactivo</span>');
+        }
+
+        const diffDays = c.lastDate ? daysBetween(c.lastDate, todayStr) : null;
+        const lastText = c.lastDate
+          ? `Última visita: ${c.lastDate} (${c.lastStatus || "-"})`
+          : "Sin fecha de última visita";
+
+        li.innerHTML = `
+          <div class="client-card ${category === "vip" ? "client-card-vip" : ""}">
+            <div class="client-card-header">
+              <div>
+                <div class="client-name">${c.name}</div>
+                <div class="client-email">${c.email}</div>
+              </div>
+              <div class="client-tags">
+                ${tagsHtml.join("")}
+              </div>
+            </div>
+            <div class="client-stats">
+              <span class="client-stat-item">Reservas: <strong>${c.count || 0}</strong></span>
+              <span class="client-stat-item">Total gastado: <strong>${formatCurrency(c.totalAmount || 0)}</strong></span>
+              <span class="client-stat-item">Primera visita: ${c.firstDate || "-"}</span>
+            </div>
+            <div class="client-last">
+              ${lastText}${diffDays !== null ? ` · Hace ~${Math.floor(diffDays)} días` : ""}
+            </div>
+            <div class="client-actions">
+              <button
+                class="add-btn"
+                style="margin-top:4px;background:#4CAF50;padding:5px 10px;font-size:12px;"
+                onclick="goToReservationsByEmail('${c.email}')"
+              >
+                Ver reservas
+              </button>
+            </div>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    window.onClientSearchChange = (value) => {
+      clientSearchTerm = value.toLowerCase();
+      renderClientsList();
+    };
+
+    window.onClientMinReservationsChange = (value) => {
+      const v = parseInt(value, 10);
+      clientMinReservations = isNaN(v) ? 0 : v;
+      renderClientsList();
+    };
+
+    window.onClientMinAmountChange = (value) => {
+      const v = parseFloat(value);
+      clientMinAmount = isNaN(v) ? 0 : v;
+      renderClientsList();
+    };
+
+    window.onClientSegmentChange = (value) => {
+      clientSegment = value;
+      renderClientsList();
+    };
+
+    window.toggleClientSort = () => {
+      clientSortByCount = !clientSortByCount;
+      renderClientsList();
+    };
+
+    window.goToReservationsByEmail = (email) => {
+      showSection('reservas');
+      const searchInput = document.querySelector("#reservas .input-search");
+      if (searchInput) {
+        searchInput.value = email;
+      }
+      searchTerm = email.toLowerCase();
+      currentFilter = "all";
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+      if (allBtn) allBtn.classList.add("active");
       renderReservations();
     };
 
-    // Función para cambiar el estado de una reserva
-    window.updateStatus = async (id, status) => {
-      const newStatus = status === "Pendiente" ? "Atendido" : "Pendiente";
+    // ========== FILTRO DE ESTADO ==========
+    window.setFilter = (filter, btn) => {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      renderReservations();
+    };
+
+    // ========== BUSCADOR RESERVAS ==========
+    window.onSearchChange = (value) => {
+      searchTerm = value.toLowerCase();
+      renderReservations();
+    };
+
+    // ========== FILTRO DESDE TARJETAS RESUMEN ==========
+    window.filterFromSummary = (filter) => {
+      const searchInput = document.querySelector("#reservas .input-search");
+      if (searchInput) searchInput.value = "";
+      searchTerm = "";
+
+      const btn = document.querySelector('.filter-btn[data-filter="' + filter + '"]') || null;
+      setFilter(filter, btn);
+    };
+
+    // ========== CAMBIAR ESTADO RESERVA (USADO EN TARJETAS Y HORARIO) ==========
+    window.setReservationStatus = async (id, newStatus) => {
       await updateDoc(doc(db, "reservations", id), { status: newStatus });
     };
 
-    // Función para reagendar la reserva
+    // ========== REAGENDAR / APLAZAR RESERVA ==========
     window.openReschedulePopup = (id) => {
       currentEditId = id;
-      document.getElementById("reschedule-modal").style.display = "flex";
+      const modal = document.getElementById("reschedule-modal");
+      if (modal) modal.style.display = "flex";
     };
 
-    // Cuando se cargue la página, comenzamos a escuchar las reservas
-    document.addEventListener("DOMContentLoaded", listenReservations);
+    window.closeRescheduleModal = () => {
+      const modal = document.getElementById("reschedule-modal");
+      if (modal) modal.style.display = "none";
+      currentEditId = null;
+
+      const dateInput = document.getElementById("reschedule-date");
+      const timeInput = document.getElementById("reschedule-time");
+      if (dateInput) dateInput.value = "";
+      if (timeInput) timeInput.value = "";
+    };
+
+    window.confirmReschedule = async () => {
+      if (!currentEditId) return;
+
+      const dateInput = document.getElementById("reschedule-date");
+      const timeInput = document.getElementById("reschedule-time");
+
+      const newDate = dateInput.value;
+      const newTime = timeInput.value;
+
+      if (!newDate || !newTime) {
+        alert("Por favor completa la nueva fecha y hora.");
+        return;
+      }
+
+      await updateDoc(doc(db, "reservations", currentEditId), {
+        date: newDate,
+        time: newTime,
+        status: "Aplazado"
+      });
+
+      window.closeRescheduleModal();
+    };
+
+    // ========== SERVICIOS ==========
+    async function loadServices() {
+      const list = document.getElementById("service-list");
+      if (!list) return;
+
+      list.innerHTML = "<li>Cargando servicios...</li>";
+
+      const snapshot = await getDocs(collection(db, "services"));
+      if (snapshot.empty) {
+        list.innerHTML = "<li>No hay servicios registrados.</li>";
+        return;
+      }
+
+      list.innerHTML = "";
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:3px;">
+            <div>
+              <strong>${d.name || "Sin nombre"}</strong> - ${d.price || 0} €
+              ${d.active === false ? '<span style="color:#d9534f;font-size:12px;">(Inactivo)</span>' : ""}
+            </div>
+            <div style="font-size:12px;color:#555;">
+              Duración: ${d.duration || "-"} min · Categoría: ${d.category || "-"}
+            </div>
+            <div style="font-size:12px;color:#555;">
+              Profesional: ${d.worker || "No asignado"}
+            </div>
+            <div style="margin-top:4px;">
+              <button
+                style="background:#5bc0de;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:6px;"
+                onclick="editService('${docSnap.id}')"
+              >
+                Editar
+              </button>
+              <button
+                style="background:#d9534f;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;"
+                onclick="deleteService('${docSnap.id}')"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    window.saveService = async () => {
+      const nameInput = document.getElementById("service-name");
+      const priceInput = document.getElementById("service-price");
+      const durationInput = document.getElementById("service-duration");
+      const categoryInput = document.getElementById("service-category");
+      const workerInput = document.getElementById("service-worker");
+      const activeInput = document.getElementById("service-active");
+
+      const name = nameInput.value.trim();
+      const price = parseFloat(priceInput.value);
+      const duration = parseInt(durationInput.value, 10);
+      const category = categoryInput.value.trim();
+      const worker = workerInput.value.trim();
+      const active = !!activeInput.checked;
+
+      if (!name || isNaN(price)) {
+        alert("Indica al menos un nombre y un precio válido.");
+        return;
+      }
+
+      const data = {
+        name,
+        price,
+        duration: isNaN(duration) ? null : duration,
+        category,
+        worker,
+        active
+      };
+
+      if (editingServiceId) {
+        await updateDoc(doc(db, "services", editingServiceId), data);
+      } else {
+        await addDoc(collection(db, "services"), data);
+      }
+
+      nameInput.value = "";
+      priceInput.value = "";
+      durationInput.value = "";
+      categoryInput.value = "";
+      workerInput.value = "";
+      activeInput.checked = true;
+
+      editingServiceId = null;
+      const saveBtn = document.getElementById("service-save-btn");
+      const cancelBtn = document.getElementById("service-cancel-btn");
+      if (saveBtn) saveBtn.textContent = "Agregar servicio";
+      if (cancelBtn) cancelBtn.style.display = "none";
+
+      loadServices();
+    };
+
+    window.editService = async (id) => {
+      const ref = doc(db, "services", id);
+      const snapshot = await getDoc(ref);
+      if (!snapshot.exists()) return;
+      const d = snapshot.data();
+
+      document.getElementById("service-name").value = d.name || "";
+      document.getElementById("service-price").value = d.price || "";
+      document.getElementById("service-duration").value = d.duration || "";
+      document.getElementById("service-category").value = d.category || "";
+      document.getElementById("service-worker").value = d.worker || "";
+      document.getElementById("service-active").checked = d.active !== false;
+
+      editingServiceId = id;
+      const saveBtn = document.getElementById("service-save-btn");
+      const cancelBtn = document.getElementById("service-cancel-btn");
+      if (saveBtn) saveBtn.textContent = "Guardar cambios";
+      if (cancelBtn) cancelBtn.style.display = "inline-block";
+    };
+
+    window.cancelEditService = () => {
+      editingServiceId = null;
+      document.getElementById("service-name").value = "";
+      document.getElementById("service-price").value = "";
+      document.getElementById("service-duration").value = "";
+      document.getElementById("service-category").value = "";
+      document.getElementById("service-worker").value = "";
+      document.getElementById("service-active").checked = true;
+
+      const saveBtn = document.getElementById("service-save-btn");
+      const cancelBtn = document.getElementById("service-cancel-btn");
+      if (saveBtn) saveBtn.textContent = "Agregar servicio";
+      if (cancelBtn) cancelBtn.style.display = "none";
+    };
+
+    window.deleteService = async (id) => {
+      if (!confirm("¿Eliminar este servicio?")) return;
+      await deleteDoc(doc(db, "services", id));
+      loadServices();
+    };
+
+    // ========== AJUSTES ==========
+    async function loadSettings() {
+      const direccionInput = document.getElementById("config-direccion");
+      const horarioInput = document.getElementById("config-horario");
+      const telefonoInput = document.getElementById("config-telefono");
+      const whatsappInput = document.getElementById("config-whatsapp");
+      const emailInput = document.getElementById("config-email");
+      const politicaInput = document.getElementById("config-politica");
+      const notasInput = document.getElementById("config-notas");
+      const alertsEnabledInput = document.getElementById("config-alerts-enabled");
+      const alertSoonHoursInput = document.getElementById("config-alert-soon-hours");
+      const maxResDayInput = document.getElementById("config-max-res-day");
+      const maxResWorkerDayInput = document.getElementById("config-max-res-worker-day");
+
+      if (!direccionInput || !horarioInput) return;
+
+      const snapshot = await getDoc(doc(db, "config", "business"));
+      if (snapshot.exists()) {
+        const data = snapshot.data();
+        direccionInput.value = data.address || "";
+        horarioInput.value = data.schedule || "";
+        if (telefonoInput) telefonoInput.value = data.phone || "";
+        if (whatsappInput) whatsappInput.value = data.whatsapp || "";
+        if (emailInput) emailInput.value = data.email || "";
+        if (politicaInput) politicaInput.value = data.cancellation_policy || "";
+        if (notasInput) notasInput.value = data.internal_notes || "";
+
+        businessConfig.alertsEnabled = data.alertsEnabled !== false;
+        businessConfig.alertSoonHours =
+          typeof data.alertSoonHours === "number" && data.alertSoonHours > 0
+            ? data.alertSoonHours
+            : 2;
+        businessConfig.maxResDay =
+          typeof data.maxResDay === "number" ? data.maxResDay : 0;
+        businessConfig.maxResWorkerDay =
+          typeof data.maxResWorkerDay === "number" ? data.maxResWorkerDay : 0;
+
+        if (alertsEnabledInput) alertsEnabledInput.checked = businessConfig.alertsEnabled;
+        if (alertSoonHoursInput) alertSoonHoursInput.value = businessConfig.alertSoonHours || 2;
+        if (maxResDayInput && businessConfig.maxResDay) maxResDayInput.value = businessConfig.maxResDay;
+        if (maxResWorkerDayInput && businessConfig.maxResWorkerDay) maxResWorkerDayInput.value = businessConfig.maxResWorkerDay;
+      } else {
+        businessConfig.alertsEnabled = true;
+        businessConfig.alertSoonHours = 2;
+        if (alertsEnabledInput) alertsEnabledInput.checked = true;
+        if (alertSoonHoursInput) alertSoonHoursInput.value = 2;
+      }
+
+      renderReservations();
+      renderWorkSchedule();
+      renderWeeklySchedule();
+    }
+
+    window.saveSettings = async () => {
+      const address = document.getElementById("config-direccion").value.trim();
+      const schedule = document.getElementById("config-horario").value.trim();
+      const phone = document.getElementById("config-telefono").value.trim();
+      const whatsapp = document.getElementById("config-whatsapp").value.trim();
+      const email = document.getElementById("config-email").value.trim();
+      const cancellation_policy = document.getElementById("config-politica").value.trim();
+      const internal_notes = document.getElementById("config-notas").value.trim();
+
+      const alertsEnabled = document.getElementById("config-alerts-enabled").checked;
+      const alertSoonHoursRaw = document.getElementById("config-alert-soon-hours").value;
+      const maxResDayRaw = document.getElementById("config-max-res-day").value;
+      const maxResWorkerDayRaw = document.getElementById("config-max-res-worker-day").value;
+
+      const alertSoonHours = parseInt(alertSoonHoursRaw, 10);
+      const maxResDay = parseInt(maxResDayRaw, 10);
+      const maxResWorkerDay = parseInt(maxResWorkerDayRaw, 10);
+
+      businessConfig.alertsEnabled = alertsEnabled;
+      businessConfig.alertSoonHours = !isNaN(alertSoonHours) && alertSoonHours > 0 ? alertSoonHours : 2;
+      businessConfig.maxResDay = !isNaN(maxResDay) && maxResDay > 0 ? maxResDay : 0;
+      businessConfig.maxResWorkerDay = !isNaN(maxResWorkerDay) && maxResWorkerDay > 0 ? maxResWorkerDay : 0;
+
+      await setDoc(
+        doc(db, "config", "business"),
+        {
+          address,
+          schedule,
+          phone,
+          whatsapp,
+          email,
+          cancellation_policy,
+          internal_notes,
+          alertsEnabled: businessConfig.alertsEnabled,
+          alertSoonHours: businessConfig.alertSoonHours,
+          maxResDay: businessConfig.maxResDay,
+          maxResWorkerDay: businessConfig.maxResWorkerDay
+        },
+        { merge: true }
+      );
+
+      alert("Ajustes guardados correctamente.");
+      renderReservations();
+      renderWorkSchedule();
+      renderWeeklySchedule();
+    };
+
+    window.exportReservationsCSV = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "reservations"));
+        if (snapshot.empty) {
+          alert("No hay reservas para exportar.");
+          return;
+        }
+
+        const rows = [];
+        rows.push([
+          "Nombre",
+          "Teléfono",
+          "Correo",
+          "Servicio",
+          "Profesional",
+          "Fecha",
+          "Hora",
+          "Dirección",
+          "Comentarios",
+          "Código",
+          "Estado"
+        ].join(";"));
+
+        snapshot.forEach((docSnap) => {
+          const r = docSnap.data();
+          const svc = servicesCache[r.massage_type || ""] || {};
+          const worker = svc.worker || "";
+          const vals = [
+            r.full_name || "",
+            r.phone || "",
+            r.email || "",
+            r.massage_type || "",
+            worker,
+            r.date || "",
+            r.time || "",
+            r.address || "",
+            (r.comments || "").replace(/(\r\n|\n|\r)/g, " "),
+            r.reservation_code || "",
+            r.status || ""
+          ];
+          rows.push(
+            vals
+              .map(v => '"' + String(v).replace(/"/g, '""') + '"')
+              .join(";")
+          );
+        });
+
+        const csvContent = rows.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "reservas_spa.csv";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.error(e);
+        alert("Ocurrió un error al exportar las reservas.");
+      }
+    };
+
+    window.clearData = async () => {
+      if (!confirm("Esto eliminará TODAS las reservas y servicios. ¿Seguro que deseas continuar?")) return;
+
+      const reservationsSnap = await getDocs(collection(db, "reservations"));
+      const servicesSnap = await getDocs(collection(db, "services"));
+
+      const deletes = [];
+
+      reservationsSnap.forEach((docSnap) => {
+        deletes.push(deleteDoc(doc(db, "reservations", docSnap.id)));
+      });
+
+      servicesSnap.forEach((docSnap) => {
+        deletes.push(deleteDoc(doc(db, "services", docSnap.id)));
+      });
+
+      await Promise.all(deletes);
+
+      alert("Base de datos limpiada.");
+    };
+
+    // Cuando se cargue la página
+    document.addEventListener("DOMContentLoaded", () => {
+      listenReservations();
+      listenServicesRealtime();
+      loadSettings();
+    });
   </script>
 
+  <!-- SCRIPT MENÚ HAMBURGUESA -->
   <script>
-  // Menú hamburguesa
-  const hamburgerMenu = document.getElementById("hamburger-menu");
-  const sidebar = document.getElementById("sidebar");
+    const hamburgerMenu = document.getElementById("hamburger-menu");
+    const sidebar = document.getElementById("sidebar");
 
-  hamburgerMenu.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-  });
-</script>
+    hamburgerMenu.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+  </script>
 
 </body>
 </html>
-
